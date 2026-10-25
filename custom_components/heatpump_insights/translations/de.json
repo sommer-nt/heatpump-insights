@@ -15,7 +15,9 @@
           "circuit_flow_target_entity": "Soll-Vorlauf (Regler)",
           "curve_slope_entity": "Heizkurven-Steilheit",
           "room_entities": "Raumthermostate",
-          "valve_entities": "Ventile je Heizkreis"
+          "valve_entities": "Ventile je Heizkreis",
+          "high_pressure_entity": "Hochdruck (Kältekreis)",
+          "hot_gas_temp_entity": "Heißgastemperatur"
         },
         "data_description": {
           "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
@@ -27,7 +29,9 @@
           "circuit_flow_target_entity": "Die Vorlauftemperatur, die der Regler aus seiner Heizkurve berechnet. Ergibt die sauberste Kurve und zeigt, ob sie erreicht wird.",
           "curve_slope_entity": "Die Steilheit-Einstellung deines Reglers, zur Einordnung.",
           "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt.",
-          "valve_entities": "Entitäten, die zeigen, ob Ventil bzw. Stellantrieb eines Kreises offen ist: Schalter, Binärsensor oder Leistung des Stellantriebs. Wird automatisch den Räumen zugeordnet."
+          "valve_entities": "Entitäten, die zeigen, ob Ventil bzw. Stellantrieb eines Kreises offen ist: Schalter, Binärsensor oder Leistung des Stellantriebs. Wird automatisch den Räumen zugeordnet.",
+          "high_pressure_entity": "Optional. Wird im Dashboard in der Ansicht Verdichter neben der Heißgastemperatur gezeigt.",
+          "hot_gas_temp_entity": "Optional. Temperatur am Verdichteraustritt; steigt, wenn die Wärmepumpe nahe an ihren Grenzen arbeitet (z. B. Warmwasser mit hoher Temperatur)."
         }
       }
     },
@@ -52,7 +56,9 @@
           "curve_slope_entity": "Heizkurven-Steilheit",
           "room_entities": "Raumthermostate",
           "valve_entities": "Ventile je Heizkreis",
-          "hmip_valve_sensors": "Homematic-IP-Ventilsensoren anlegen"
+          "hmip_valve_sensors": "Homematic-IP-Ventilsensoren anlegen",
+          "high_pressure_entity": "Hochdruck (Kältekreis)",
+          "hot_gas_temp_entity": "Heißgastemperatur"
         },
         "data_description": {
           "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
@@ -67,7 +73,9 @@
           "curve_slope_entity": "Die Steilheit-Einstellung deines Reglers, zur Einordnung.",
           "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt.",
           "valve_entities": "Entitäten, die zeigen, ob Ventil bzw. Stellantrieb eines Kreises offen ist: Schalter, Binärsensor oder Leistung des Stellantriebs. Wird automatisch den Räumen zugeordnet.",
-          "hmip_valve_sensors": "Legt für Wandthermostate mit Relais (z. B. HmIP-BWTH) und Schaltaktoren in Homematic-IP-Heizgruppen einen Sensor „offen/geschlossen“ an, damit der Verlauf aufgezeichnet wird. Übergangslösung, bis Home Assistant den Wert selbst bereitstellt."
+          "hmip_valve_sensors": "Legt für Wandthermostate mit Relais (z. B. HmIP-BWTH) und Schaltaktoren in Homematic-IP-Heizgruppen einen Sensor „offen/geschlossen“ an, damit der Verlauf aufgezeichnet wird. Übergangslösung, bis Home Assistant den Wert selbst bereitstellt.",
+          "high_pressure_entity": "Optional. Wird im Dashboard in der Ansicht Verdichter neben der Heißgastemperatur gezeigt.",
+          "hot_gas_temp_entity": "Optional. Temperatur am Verdichteraustritt; steigt, wenn die Wärmepumpe nahe an ihren Grenzen arbeitet (z. B. Warmwasser mit hoher Temperatur)."
         }
       }
     }

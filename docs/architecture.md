@@ -74,6 +74,8 @@ only **roles**:
 | `valves` | switch / binary sensor / actuator power per circuit | undersupplied rooms, open circuits |
 | `return_temp` | vendor sensor, DS18B20 | spread |
 | `heat_energy` | heat meter (M-Bus, MQTT), vendor heat counter | real COP / SPF |
+| `high_pressure` | vendor sensor (e.g. ISG, Modbus) | compressor view on the dashboard; operating-limit check planned |
+| `hot_gas_temp` | vendor sensor (compressor discharge) | compressor view on the dashboard; operating-limit check planned |
 | *planned:* `operating_mode`, `compressor_state`, `dhw_temp`, `curve_shift`, `electric_energy`, `backup_heater` | | mode split, change detection, throttled rooms |
 
 Today the user picks entities in the config flow. **Device profiles** (see

@@ -15,7 +15,9 @@
           "circuit_flow_target_entity": "Target flow temperature (controller)",
           "curve_slope_entity": "Heating curve slope",
           "room_entities": "Room thermostats",
-          "valve_entities": "Valves per heating circuit"
+          "valve_entities": "Valves per heating circuit",
+          "high_pressure_entity": "Refrigerant high pressure",
+          "hot_gas_temp_entity": "Hot gas temperature"
         },
         "data_description": {
           "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
@@ -27,7 +29,9 @@
           "circuit_flow_target_entity": "The flow temperature the controller calculates from its heating curve. Gives the cleanest curve and shows whether it is delivered.",
           "curve_slope_entity": "The slope setting of your controller, reported for reference.",
           "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve.",
-          "valve_entities": "Entities showing whether a circuit's valve or actuator is open: switch, binary sensor or actuator power. Matched to rooms automatically."
+          "valve_entities": "Entities showing whether a circuit's valve or actuator is open: switch, binary sensor or actuator power. Matched to rooms automatically.",
+          "high_pressure_entity": "Optional. Shown in the dashboard's compressor view next to the hot gas temperature.",
+          "hot_gas_temp_entity": "Optional. Compressor discharge temperature; rises when the heat pump works near its limits (e.g. hot water at high temperatures)."
         }
       }
     },
@@ -52,7 +56,9 @@
           "curve_slope_entity": "Heating curve slope",
           "room_entities": "Room thermostats",
           "valve_entities": "Valves per heating circuit",
-          "hmip_valve_sensors": "Create Homematic IP valve sensors"
+          "hmip_valve_sensors": "Create Homematic IP valve sensors",
+          "high_pressure_entity": "Refrigerant high pressure",
+          "hot_gas_temp_entity": "Hot gas temperature"
         },
         "data_description": {
           "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
@@ -67,7 +73,9 @@
           "curve_slope_entity": "The slope setting of your controller, reported for reference.",
           "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve.",
           "valve_entities": "Entities showing whether a circuit's valve or actuator is open: switch, binary sensor or actuator power. Matched to rooms automatically.",
-          "hmip_valve_sensors": "Adds an 'open/closed' sensor for wall thermostats with built-in relay (e.g. HmIP-BWTH) and switch actuators in Homematic IP heating groups, so their history is recorded. Bridge until Home Assistant exposes the value itself."
+          "hmip_valve_sensors": "Adds an 'open/closed' sensor for wall thermostats with built-in relay (e.g. HmIP-BWTH) and switch actuators in Homematic IP heating groups, so their history is recorded. Bridge until Home Assistant exposes the value itself.",
+          "high_pressure_entity": "Optional. Shown in the dashboard's compressor view next to the hot gas temperature.",
+          "hot_gas_temp_entity": "Optional. Compressor discharge temperature; rises when the heat pump works near its limits (e.g. hot water at high temperatures)."
         }
       }
     }

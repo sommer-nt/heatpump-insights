@@ -20,6 +20,7 @@ OPTIONS = {
     "circuit_flow_temp_entity": "sensor.flow",
     "room_entities": ["climate.bath"],
     "valve_entities": ["switch.bath_valve"],
+    "high_pressure_entity": "sensor.high_pressure",
     "short_cycle_minutes": 10,
 }
 
@@ -83,6 +84,7 @@ async def test_sensors_are_created_with_values(hass: HomeAssistant, setup_entry)
     assert hass.states.get(own["overheated_rooms"]).state == "unknown"
     config = hass.states.get(own["configuration"])
     assert config.attributes["roles"]["power_entity"] == "sensor.hp_power"
+    assert config.attributes["roles"]["high_pressure_entity"] == "sensor.high_pressure"
     assert config.attributes["valves_by_room"] == {"Bath": "switch.bath_valve"}
     valve = next(
         e

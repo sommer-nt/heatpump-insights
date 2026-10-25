@@ -15,6 +15,10 @@ const TEXT = {
     roomTemps: "Raumtemperatur und Soll", valves24: "Ventile – 24 Stunden",
     noFindings: "Keine Befunde.", outdoor: "Außen", setting: "Einstellung Steilheit",
     target: "Soll-Vorlauf", actual: "Ist-Vorlauf", power: "Leistung",
+    compressor: "Verdichter", compressorNow: "Aktuell", compressor48: "Hochdruck und Heißgas – 48 Stunden",
+    highPressure: "Hochdruck", hotGas: "Heißgas",
+    compressorHint: "Nur Anzeige: Hochdruck und Heißgas steigen, wenn die Wärmepumpe nahe an ihren Grenzen " +
+      "arbeitet, etwa bei Warmwasser mit hoher Temperatur. Eine Bewertung gegen die Herstellergrenzen ist geplant.",
     severity: { info: "Info", check: "Prüfen", act: "Handeln" },
     hint: "Für das *Warum* frag Claude mit dem Connector Heat Pump Insights. " +
       "„Prüfen“ heißt beobachten, „Handeln“ nur bei klarer Datenlage – und nur Einstellungen, nie Eingriffe an der Anlage.",
@@ -27,6 +31,10 @@ const TEXT = {
     roomTemps: "Room temperature and setpoint", valves24: "Valves – 24 hours",
     noFindings: "No findings.", outdoor: "Outdoor", setting: "Slope setting",
     target: "Target flow", actual: "Actual flow", power: "Power",
+    compressor: "Compressor", compressorNow: "Now", compressor48: "High pressure and hot gas – 48 hours",
+    highPressure: "High pressure", hotGas: "Hot gas",
+    compressorHint: "Display only: high pressure and hot gas rise when the heat pump works near its limits, " +
+      "e.g. hot water at high temperatures. An assessment against the manufacturer's limits is planned.",
     severity: { info: "Info", check: "Check", act: "Act" },
     hint: "Ask Claude with the Heat Pump Insights connector for the *why*. " +
       "'Check' means watch, 'Act' only with clear data – and only settings, never physical work.",
@@ -127,6 +135,34 @@ class HeatPumpInsightsStrategy extends HTMLElement {
           { type: "grid", column_span: 2, cards: [
             { type: "heading", heading: t.curve48, icon: "mdi:thermometer-lines" },
             { type: "history-graph", hours_to_show: 48, entities: lines, grid_options: { columns: "full", rows: 5 } },
+          ] },
+        ],
+      });
+    }
+
+    // Compressor (display only until an operating-limit analysis exists)
+    const compressorLines = [
+      roles.high_pressure_entity && { entity: roles.high_pressure_entity, name: t.highPressure },
+      roles.hot_gas_temp_entity && { entity: roles.hot_gas_temp_entity, name: t.hotGas },
+    ].filter(Boolean);
+    if (compressorLines.length) {
+      const graphs = compressorLines.map((line) => ({
+        type: "history-graph", hours_to_show: 48, entities: [line], grid_options: { columns: "full", rows: 4 },
+      }));
+      if (roles.power_entity) {
+        graphs.push({ type: "history-graph", hours_to_show: 48, entities: [{ entity: roles.power_entity, name: t.power }],
+          grid_options: { columns: "full", rows: 3 } });
+      }
+      views.push({
+        title: t.compressor, path: "compressor", icon: "mdi:gauge", type: "sections", max_columns: 3,
+        sections: [
+          { type: "grid", cards: [
+            { type: "heading", heading: t.compressorNow, icon: "mdi:gauge" },
+            ...compressorLines.map((line) => tile(line.entity, { name: line.name, ...NO_TAP })),
+            { type: "markdown", content: t.compressorHint },
+          ] },
+          { type: "grid", column_span: 2, cards: [
+            { type: "heading", heading: t.compressor48, icon: "mdi:chart-line" }, ...graphs,
           ] },
         ],
       });

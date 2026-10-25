@@ -16,7 +16,9 @@ from .const import (
     CONF_CURVE_SLOPE,
     CONF_FLOW_TEMP,
     CONF_HEAT_ENERGY,
+    CONF_HIGH_PRESSURE,
     CONF_HMIP_VALVES,
+    CONF_HOT_GAS,
     CONF_ON_THRESHOLD_W,
     CONF_OUTDOOR_TEMP,
     CONF_POWER,
@@ -50,6 +52,8 @@ def _roles_schema(values: dict[str, Any]) -> dict:
         opt(CONF_CURVE_SLOPE): selector.EntitySelector(
             selector.EntitySelectorConfig(domain=["number", "input_number", "sensor"])
         ),
+        opt(CONF_HIGH_PRESSURE): _sensor("pressure"),
+        opt(CONF_HOT_GAS): _sensor("temperature"),
         opt(CONF_ROOMS): selector.EntitySelector(
             selector.EntitySelectorConfig(domain="climate", multiple=True)
         ),

@@ -29,7 +29,7 @@ LLM             = interpretation (dialogue in your language)
 
 | Where | What you get |
 |---|---|
-| **Dashboard** in Home Assistant | Key figures as sensors (starts today, runtime, short cycles, rating, actual heating-curve slope, overheated rooms, valve open share per room) and a ready-made dashboard generated from your roles |
+| **Dashboard** in Home Assistant | Key figures as sensors (starts today, runtime, short cycles, rating, actual heating-curve slope, overheated rooms, valve open share per room) and a ready-made dashboard generated from your roles, with a compressor view for high pressure and hot gas if you assign them |
 | **AI assistant** (Claude, ChatGPT, local models via MCP / Assist) | The *why*: graded findings with the evidence they rest on, explained in your language |
 | **Streamlit playground** | Try the analysis without installing, with examples or a history export |
 
