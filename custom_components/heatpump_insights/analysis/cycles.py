@@ -26,7 +26,7 @@ from .timeseries import (
     weighted_percentile,
 )
 
-ANALYSIS_VERSION = "0.3.2"
+ANALYSIS_VERSION = "0.3.3"
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,13 +1,20 @@
 {
   "domain": "heatpump_insights",
   "name": "Heat Pump Insights",
-  "codeowners": ["@sommer-nt"],
+  "after_dependencies": [
+    "homematicip_cloud"
+  ],
+  "codeowners": [
+    "@sommer-nt"
+  ],
   "config_flow": true,
-  "dependencies": ["recorder"],
+  "dependencies": [
+    "recorder"
+  ],
   "documentation": "https://github.com/sommer-nt/heatpump-insights",
   "integration_type": "service",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/sommer-nt/heatpump-insights/issues",
   "requirements": [],
-  "version": "0.3.2"
+  "version": "0.3.3"
 }
