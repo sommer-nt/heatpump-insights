@@ -13,7 +13,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import PERCENTAGE, EntityCategory, UnitOfTime
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -171,9 +171,22 @@ async def async_setup_entry(
         for description in SENSORS
         if description.needs is None or available[description.needs]
     ]
-    entities += [ValveOpenSensor(coordinator, room) for room in sorted(coordinator.data.valve_of)]
     entities.append(RolesSensor(coordinator))
     async_add_entities(entities)
+
+    # Valves can be paired with rooms later (e.g. a valve integration that starts after us),
+    # so per-room sensors are added whenever a new pairing shows up.
+    known: set[str] = set()
+
+    @callback
+    def _add_valve_sensors() -> None:
+        new = sorted(set(coordinator.data.valve_of) - known)
+        if new:
+            known.update(new)
+            async_add_entities(ValveOpenSensor(coordinator, room) for room in new)
+
+    _add_valve_sensors()
+    entry.async_on_unload(coordinator.async_add_listener(_add_valve_sensors))
 
 
 class _Base(CoordinatorEntity[InsightsCoordinator]):

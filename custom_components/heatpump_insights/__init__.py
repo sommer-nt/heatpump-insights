@@ -49,10 +49,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not any(domain == DOMAIN for domain, _ in device.identifiers):
             registry.async_update_device(device.id, remove_config_entry_id=entry.entry_id)
 
+    # Valve bridge sensors first: the first analysis pairs valves with rooms through them.
+    await hass.config_entries.async_forward_entry_setups(entry, [Platform.BINARY_SENSOR])
     coordinator = InsightsCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, [Platform.SENSOR])
     return True
 
 
