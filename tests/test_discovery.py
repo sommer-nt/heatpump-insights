@@ -163,3 +163,78 @@ def test_room_candidates_skip_the_heat_pump_climate():
         EntityInfo("climate.bath", "Bath", platform="tado"),
     ]
     assert room_candidates(entities) == ["climate.wohnzimmer", "climate.bath"]
+
+
+def test_vaillant_mypyllant():
+    dev = {"platform": "mypyllant", "device_name": "aroTHERM plus"}
+    s = _suggested(
+        [
+            T("sensor.home_outdoor_temperature", "Home Outdoor Temperature", **dev),
+            T("sensor.home_circuit_0_flow_temperature", "Circuit 0 Flow Temperature", **dev),
+            EntityInfo("sensor.home_circuit_0_heating_curve", "Circuit 0 Heating Curve", **dev),
+            T(
+                "sensor.home_domestic_hot_water_tank_temperature",
+                "Domestic Hot Water Tank Temperature",
+                **dev,
+            ),
+            E("sensor.arotherm_heating_energy_generated", "Heating Energy Generated", **dev),
+            E("sensor.arotherm_heating_energy_consumed", "Heating Energy Consumed", **dev),
+        ]
+    )
+    assert s["outdoor_temp_entity"] == "sensor.home_outdoor_temperature"
+    assert s["circuit_flow_temp_entity"] == "sensor.home_circuit_0_flow_temperature"
+    assert s["curve_slope_entity"] == "sensor.home_circuit_0_heating_curve"
+    assert s["heat_energy_entity"] == "sensor.arotherm_heating_energy_generated"
+
+
+def test_buderus_bosch_junkers_ems_esp():
+    # EMS-ESP calls the heat generator "boiler" – that is not the hot water tank.
+    dev = {"platform": "mqtt", "device_name": "EMS-ESP Boiler"}
+    s = _suggested(
+        [
+            T("sensor.boiler_outside_temperature", "Boiler Outside temperature", **dev),
+            T("sensor.boiler_current_flow_temperature", "Boiler Current flow temperature", **dev),
+            T("sensor.boiler_selected_flow_temperature", "Boiler Selected flow temperature", **dev),
+            T("sensor.boiler_return_temperature", "Boiler Return temperature", **dev),
+            T("sensor.boiler_dhw_current_intern_temperature", "Boiler DHW current intern temperature", **dev),
+        ]
+    )
+    assert s["outdoor_temp_entity"] == "sensor.boiler_outside_temperature"
+    assert s["flow_temp_entity"] == "sensor.boiler_current_flow_temperature"
+    assert s["return_temp_entity"] == "sensor.boiler_return_temperature"
+    assert s["circuit_flow_target_entity"] == "sensor.boiler_selected_flow_temperature"
+
+
+def test_wolf_weishaupt_german_and_ebusd_camel_case():
+    wolf = {"platform": "wolflink", "device_name": "Wolf CHA"}
+    s = _suggested(
+        [
+            T("sensor.wolf_aussentemperatur", "Außentemperatur", **wolf),
+            T("sensor.wolf_vorlauftemperatur", "Vorlauftemperatur", **wolf),
+            T("sensor.wolf_ruecklauftemperatur", "Rücklauftemperatur", **wolf),
+            T("sensor.wolf_warmwassertemperatur", "Warmwassertemperatur", **wolf),
+        ]
+    )
+    assert s["outdoor_temp_entity"] == "sensor.wolf_aussentemperatur"
+    assert s["flow_temp_entity"] == "sensor.wolf_vorlauftemperatur"
+    assert s["return_temp_entity"] == "sensor.wolf_ruecklauftemperatur"
+    s = _suggested(
+        [
+            T("sensor.weishaupt_wwp_aussentemperatur", "WWP Außentemperatur", platform="weishaupt_modbus"),
+            T("sensor.weishaupt_wwp_vorlauftemperatur", "WWP Vorlauftemperatur", platform="weishaupt_modbus"),
+            T("sensor.weishaupt_hk1_vorlauf_soll", "HK1 Vorlauf Soll", platform="weishaupt_modbus"),
+        ]
+    )
+    assert s["outdoor_temp_entity"] == "sensor.weishaupt_wwp_aussentemperatur"
+    assert s["flow_temp_entity"] == "sensor.weishaupt_wwp_vorlauftemperatur"
+    assert s["circuit_flow_target_entity"] == "sensor.weishaupt_hk1_vorlauf_soll"
+    s = _suggested(
+        [
+            T("sensor.ebusd_hmu_flowtemp", "hmu FlowTemp", platform="mqtt"),
+            T("sensor.ebusd_hmu_returntemp", "hmu ReturnTemp", platform="mqtt"),
+            T("sensor.ebusd_broadcast_outsidetemp", "broadcast outsidetemp", platform="mqtt"),
+        ]
+    )
+    assert s["flow_temp_entity"] == "sensor.ebusd_hmu_flowtemp"
+    assert s["return_temp_entity"] == "sensor.ebusd_hmu_returntemp"
+    assert s["outdoor_temp_entity"] == "sensor.ebusd_broadcast_outsidetemp"

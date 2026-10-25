@@ -41,9 +41,11 @@ RETURN = ("return", "ruecklauf", "rucklauf", "retour", "retur", "paluuvesi", "ri
 CIRCUIT = ("heating circuit", "circuit", "heizkreis", "kreis", "hk", "hc", "zone", "z",
            "mischer", "mixing", "mk", "circuito", "kring")
 TARGET = ("target", "soll", "set", "setpoint", "desired", "calculated", "berechnet",
-          "required", "consigne", "richtwert", "requested", "demand")
+          "required", "consigne", "richtwert", "requested", "demand", "selected")
+# Not "boiler": EMS-ESP (Buderus, Bosch, Junkers) and English names use it for the heat
+# generator itself; a hot water tank is still caught by "dhw", "tank", "warmwasser" etc.
 DHW = ("dhw", "domestic", "hot water", "water heating", "warmwasser", "ww", "brauchwasser",
-       "tank", "speicher", "boiler", "cylinder", "ecs", "sanitaire", "tapwater", "legionella")
+       "tank", "speicher", "cylinder", "ecs", "sanitaire", "tapwater", "legionella")
 BACKUP = ("nhz", "heizstab", "booster", "backup", "immersion", "zuheiz", "elektroheiz",
           "auxiliary", "appoint")
 OUTDOOR = ("outdoor", "outside", "aussen", "exterieur", "exterior", "external", "buiten",
@@ -70,7 +72,8 @@ ROLE_SPECS: dict[str, dict] = {
     },
     "flow_temp_entity": {
         "domains": ("sensor",), "units": TEMPERATURE_UNITS, "device_classes": ("temperature",),
-        "need": (FLOW,), "strong": FLOW, "weak": ("actual", "ist", "water", "wasser", "wp"),
+        "need": (FLOW,), "strong": FLOW,
+        "weak": ("actual", "ist", "current", "water", "wasser", "wp"),
         "negative": RETURN + TARGET + DHW + CIRCUIT + BACKUP + NOT_HEATING_WATER + ("floor",),
     },
     "return_temp_entity": {
