@@ -53,8 +53,8 @@ for almost everyone.
 
 ## What we deliberately do **not** build
 
-- **No new AI integration.** Home Assistant already connects to Claude, OpenAI, Ollama and
-  MCP clients. We provide tools, not another chat connector.
+- **No new AI integration.** Home Assistant already connects to cloud and local language
+  models and to MCP clients. We provide tools, not another chat connector.
 - **No controller (for now).** No automatic optimisation loop. Writing settings may come later,
   strictly opt-in with an explicit allow-list – after the analyses are proven.
 - **No dashboard product.** Other projects visualise; we diagnose. (Figures in tool output

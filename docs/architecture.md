@@ -17,8 +17,8 @@ flowchart LR
         L --> MCP["MCP Server<br/>integration"]
         L --> CA["Conversation agents<br/>(Assist)"]
     end
-    MCP <--> C["Claude Desktop / Code<br/>any MCP client"]
-    CA <--> M["OpenAI · Anthropic · Ollama · …"]
+    MCP <--> C["MCP client<br/>desktop or IDE assistant"]
+    CA <--> M["cloud or local LLM"]
 ```
 
 | Layer | Responsibility | Depends on Home Assistant? |

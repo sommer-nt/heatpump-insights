@@ -3,7 +3,7 @@
 **Your AI assistant understands why your heat pump behaves the way it does – and how to set it up better.**
 
 Heat Pump Insights is an open-source Home Assistant integration that gives AI assistants
-(Claude, ChatGPT, local models via Ollama – anything that talks to Home Assistant) a set of
+(cloud or local models – anything that talks to Home Assistant via MCP or Assist) a set of
 **expert analysis tools** for heat pumps. It works with any brand: all it needs is the heat
 pump's electrical power. Every additional sensor unlocks more analyses.
 
@@ -30,7 +30,7 @@ LLM             = interpretation (dialogue in your language)
 | Where | What you get |
 |---|---|
 | **Dashboard** in Home Assistant | Key figures as sensors (starts today, runtime, short cycles, rating, actual heating-curve slope, overheated rooms, valve open share per room) and a ready-made dashboard generated from your roles, with a compressor view for high pressure and hot gas if you assign them |
-| **AI assistant** (Claude, ChatGPT, local models via MCP / Assist) | The *why*: graded findings with the evidence they rest on, explained in your language |
+| **AI assistant** (via MCP or Assist) | The *why*: graded findings with the evidence they rest on, explained in your language |
 | **Streamlit playground** | Try the analysis without installing, with examples or a history export |
 
 ## Status
@@ -60,7 +60,7 @@ There is no list of supported models. Home Assistant describes every sensor the 
 (type, unit, name, device), so Heat Pump Insights recognises the roles itself – in English,
 German, French, Dutch, Scandinavian and Italian wording, for ISG, ViCare, Daikin, Aquarea/HeishaMon,
 Luxtronik, ESPHome sensors and anything else. The setup form is pre-filled where one sensor
-clearly fits; where two fit equally well, you (or Claude, asking you) choose. Unknown wording? Add
+clearly fits; where two fit equally well, you (or your assistant, asking you) choose. Unknown wording? Add
 the word to `analysis/discovery.py` – one line helps every user of that integration.
 
 ## Dashboard
@@ -100,8 +100,8 @@ Requires Home Assistant **2026.10** or newer.
 2. Install **Heat Pump Insights**, restart Home Assistant.
 3. *Settings → Devices & services → Add integration → Heat Pump Insights*, assign your sensors.
 4. Expose the tools to your assistant:
-   - **Claude / other MCP clients:** *Model Context Protocol Server* integration → select the LLM API **Heat Pump Insights** (alongside *Assist* if you like).
-   - **Assist with a conversation agent** (OpenAI, Anthropic, Ollama, …): in the agent's options, enable **Heat Pump Insights** as an LLM API.
+   - **MCP clients:** *Model Context Protocol Server* integration → select the LLM API **Heat Pump Insights** (alongside *Assist* if you like).
+   - **Assist with a conversation agent** (cloud or local): in the agent's options, enable **Heat Pump Insights** as an LLM API.
 
 ## Documentation
 

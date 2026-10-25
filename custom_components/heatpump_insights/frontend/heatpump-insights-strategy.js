@@ -20,7 +20,7 @@ const TEXT = {
     compressorHint: "Nur Anzeige: Hochdruck und Heißgas steigen, wenn die Wärmepumpe nahe an ihren Grenzen " +
       "arbeitet, etwa bei Warmwasser mit hoher Temperatur. Eine Bewertung gegen die Herstellergrenzen ist geplant.",
     severity: { info: "Info", check: "Prüfen", act: "Handeln" },
-    hint: "Für das *Warum* frag Claude mit dem Connector Heat Pump Insights. " +
+    hint: "Für das *Warum* frag deinen KI-Assistenten (LLM-API Heat Pump Insights). " +
       "„Prüfen“ heißt beobachten, „Handeln“ nur bei klarer Datenlage – und nur Einstellungen, nie Eingriffe an der Anlage.",
   },
   en: {
@@ -36,7 +36,7 @@ const TEXT = {
     compressorHint: "Display only: high pressure and hot gas rise when the heat pump works near its limits, " +
       "e.g. hot water at high temperatures. An assessment against the manufacturer's limits is planned.",
     severity: { info: "Info", check: "Check", act: "Act" },
-    hint: "Ask Claude with the Heat Pump Insights connector for the *why*. " +
+    hint: "Ask your AI assistant (LLM API Heat Pump Insights) for the *why*. " +
       "'Check' means watch, 'Act' only with clear data – and only settings, never physical work.",
   },
 };
