@@ -36,7 +36,7 @@ ROLE_UNLOCKS = {
     CONF_OUTDOOR_TEMP: "cycling vs. weather, energy signature, heating curve",
     CONF_FLOW_TEMP: "heating curve analysis",
     CONF_RETURN_TEMP: "flow/return spread",
-    CONF_HEAT_ENERGY: "real COP / seasonal performance factor",
+    CONF_HEAT_ENERGY: "real COP / seasonal performance factor (analysis planned, not yet available)",
     CONF_CIRCUIT_FLOW: "heating curve analysis (actual curve)",
     CONF_CIRCUIT_TARGET: "heating curve analysis (controller curve, delivery check)",
     CONF_ROOMS: "room comfort: overheated rooms, the room that limits the curve",

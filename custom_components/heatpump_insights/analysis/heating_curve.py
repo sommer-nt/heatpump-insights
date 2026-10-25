@@ -41,6 +41,10 @@ class CurveConfig:
     max_outdoor_c: float | None = None
     """Ignore hours warmer than this (heating usually off). ``None``: keep all."""
 
+    min_flow_c: float = 15.0
+    """Flow values below this mean 'no heat requested' (controllers report frost-protection
+    or placeholder targets such as 5 °C); such hours are left out."""
+
 
 @dataclass(slots=True)
 class CurveReport:
@@ -50,6 +54,7 @@ class CurveReport:
     source: str
     """``target`` (controller's target flow) or ``actual`` (measured flow)."""
     hours_used: int
+    hours_without_demand: int
     outdoor_range_c: dict[str, float] | None
     slope_k_per_k: float | None
     """Flow temperature rise per kelvin of colder outdoor temperature."""
@@ -106,15 +111,17 @@ def analyze_heating_curve(
 
     source = "target" if flow_target else "actual"
     flow = flow_target or flow_actual or {}
-    hours = sorted(
+    candidates = [
         h for h in flow if h in outdoor and (cfg.max_outdoor_c is None or outdoor[h] <= cfg.max_outdoor_c)
-    )
+    ]
+    hours = sorted(h for h in candidates if flow[h] >= cfg.min_flow_c)
     report = CurveReport(
         analysis_version=ANALYSIS_VERSION,
         window_start=iso(start),
         window_end=iso(end),
         source=source,
         hours_used=len(hours),
+        hours_without_demand=len(candidates) - len(hours),
         outdoor_range_c=None,
         slope_k_per_k=None,
         current_curve_setting=curve_setting,
@@ -124,6 +131,8 @@ def analyze_heating_curve(
             "Curve fitted on the controller's target flow."
             if source == "target"
             else "Curve fitted on the measured flow; hot-water or defrost hours may add scatter.",
+            f"Hours with a flow value below {cfg.min_flow_c:.0f} °C count as 'no heat requested' "
+            "and are left out.",
             "Vendor curve settings use their own scales; the fitted slope is in kelvin per kelvin "
             "and need not equal the controller's slope number.",
         ],

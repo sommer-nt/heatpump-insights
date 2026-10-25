@@ -90,3 +90,15 @@ def test_report_is_json_serialisable():
     out = outdoor_series()
     r = analyze_heating_curve(hourly(out), hourly([curve(t) for t in out]), start=T0, end=T0)
     json.dumps(r.as_dict())
+
+
+def test_frost_protection_placeholder_targets_are_ignored():
+    out = outdoor_series(seed=5)
+    target = [curve(t) for t in out]
+    actual = list(target)
+    for i in range(0, len(target), 3):  # every 3rd hour: no demand, controller reports 5 °C
+        target[i] = 5.0
+    r = analyze_heating_curve(hourly(out), hourly(actual), hourly(target), start=T0, end=T0)
+    assert r.slope_k_per_k == pytest.approx(0.4, abs=0.01)
+    assert r.hours_without_demand == len(range(0, len(out), 3))
+    assert r.tracking["mean_actual_minus_target_k"] == pytest.approx(0.0, abs=0.01)
