@@ -18,7 +18,6 @@ from typing import Any
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass, BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import CONF_HMIP_VALVES
@@ -65,8 +64,6 @@ async def async_setup_entry(
 class HmipValveSensor(BinarySensorEntity):
     """On = valve actuator powered/open."""
 
-    _attr_has_entity_name = True
-    _attr_translation_key = "valve"
     _attr_device_class = BinarySensorDeviceClass.OPENING
     _attr_should_poll = False
 
@@ -75,7 +72,9 @@ class HmipValveSensor(BinarySensorEntity):
         self._channel = channel
         self._field = field
         self._attr_unique_id = f"hmip_valve_{device.id}_{channel}"
-        self._attr_device_info = DeviceInfo(identifiers={(HMIP_DOMAIN, device.id)})
+        # No device link: Home Assistant does not attach entities of one integration to
+        # devices of another, it would create duplicate devices instead.
+        self._attr_name = f"Ventil {room or getattr(device, 'label', device.id)}"
         self._attr_extra_state_attributes = {"heating_group": room, "source": "homematicip_cloud"}
 
     def _channel_data(self) -> dict:

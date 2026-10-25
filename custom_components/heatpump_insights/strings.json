@@ -71,12 +71,5 @@
         }
       }
     }
-  },
-  "entity": {
-    "binary_sensor": {
-      "valve": {
-        "name": "Valve"
-      }
-    }
   }
 }
