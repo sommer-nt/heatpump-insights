@@ -36,8 +36,11 @@ Milestones are gated by the [validation plan](validation.md), not by dates.
 - [ ] `heatpump_efficiency`: COP/SPF from heat meter or flow rate, backup heater included
 
 ## v0.5 – Device profiles
-- [ ] Profile format and auto-detection in the config flow
-- [ ] Profiles for the most common integrations (ViCare, myPyllant, Daikin Onecta / P1P2,
+- [x] Vendor-independent role discovery (device class, unit, multilingual keywords), pre-filled
+      config flow, `heatpump_discover_sensors` for the assistant
+- [ ] Split electricity and heat by operating mode (heating / hot water / backup heater) where
+      the integration reports it
+- [ ] Profiles only where wording alone is not enough, for the most common integrations (ViCare, myPyllant, Daikin Onecta / P1P2,
       NIBE, Panasonic Aquarea / HeishaMon, MELCloud, ebusd, Stiebel Eltron ISG, Lambda, …)
 
 ## v1.0 – Public release

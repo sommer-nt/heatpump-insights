@@ -29,10 +29,13 @@ from .const import (
     DEFAULT_SHORT_CYCLE_MIN,
     DOMAIN,
 )
+from .discover import discover
 
 
-def _sensor(device_class: str) -> selector.EntitySelector:
-    return selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor", device_class=device_class))
+def _sensor() -> selector.EntitySelector:
+    # Not filtered by device class: many vendor integrations leave it unset, and their
+    # sensors must still be selectable. The suggested values come from role discovery.
+    return selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
 
 
 def _roles_schema(values: dict[str, Any]) -> dict:
@@ -40,20 +43,18 @@ def _roles_schema(values: dict[str, Any]) -> dict:
         return probatio.Optional(key, description={"suggested_value": values.get(key)})
 
     return {
-        probatio.Required(CONF_POWER, description={"suggested_value": values.get(CONF_POWER)}): _sensor(
-            "power"
-        ),
-        opt(CONF_OUTDOOR_TEMP): _sensor("temperature"),
-        opt(CONF_FLOW_TEMP): _sensor("temperature"),
-        opt(CONF_RETURN_TEMP): _sensor("temperature"),
-        opt(CONF_HEAT_ENERGY): _sensor("energy"),
-        opt(CONF_CIRCUIT_FLOW): _sensor("temperature"),
-        opt(CONF_CIRCUIT_TARGET): _sensor("temperature"),
+        probatio.Required(CONF_POWER, description={"suggested_value": values.get(CONF_POWER)}): _sensor(),
+        opt(CONF_OUTDOOR_TEMP): _sensor(),
+        opt(CONF_FLOW_TEMP): _sensor(),
+        opt(CONF_RETURN_TEMP): _sensor(),
+        opt(CONF_HEAT_ENERGY): _sensor(),
+        opt(CONF_CIRCUIT_FLOW): _sensor(),
+        opt(CONF_CIRCUIT_TARGET): _sensor(),
         opt(CONF_CURVE_SLOPE): selector.EntitySelector(
             selector.EntitySelectorConfig(domain=["number", "input_number", "sensor"])
         ),
-        opt(CONF_HIGH_PRESSURE): _sensor("pressure"),
-        opt(CONF_HOT_GAS): _sensor("temperature"),
+        opt(CONF_HIGH_PRESSURE): _sensor(),
+        opt(CONF_HOT_GAS): _sensor(),
         opt(CONF_ROOMS): selector.EntitySelector(
             selector.EntitySelectorConfig(domain="climate", multiple=True)
         ),
@@ -93,8 +94,12 @@ class HeatPumpInsightsConfigFlow(ConfigFlow, domain=DOMAIN):
             self._abort_if_unique_id_configured()
             name = user_input.pop(CONF_NAME)
             return self.async_create_entry(title=name, data=user_input)
+        roles, rooms = discover(self.hass)
+        suggested: dict[str, Any] = {role: entry["suggested"] for role, entry in roles.items()}
+        if rooms:
+            suggested[CONF_ROOMS] = rooms
         schema = probatio.Schema(
-            {probatio.Required(CONF_NAME, default="Heat pump"): str, **_roles_schema({})}
+            {probatio.Required(CONF_NAME, default="Heat pump"): str, **_roles_schema(suggested)}
         )
         return self.async_show_form(step_id="user", data_schema=schema)
 

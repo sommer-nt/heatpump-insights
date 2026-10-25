@@ -32,8 +32,20 @@ async def _record_history(hass: HomeAssistant, freezer: FrozenDateTimeFactory) -
     for step in range(0, 2 * 24 * 6 + 1):  # every 10 minutes
         minute = step * 10
         running = (minute % 180) < 40
-        hass.states.async_set("sensor.hp_power", "900" if running else "40", {"unit_of_measurement": "W"})
-        hass.states.async_set("sensor.outdoor", "5", {"unit_of_measurement": "°C"})
+        hass.states.async_set(
+            "sensor.hp_power",
+            "900" if running else "40",
+            {"unit_of_measurement": "W", "device_class": "power", "friendly_name": "Heat pump power"},
+        )
+        hass.states.async_set(
+            "sensor.outdoor",
+            "5",
+            {
+                "unit_of_measurement": "°C",
+                "device_class": "temperature",
+                "friendly_name": "Outdoor temperature",
+            },
+        )
         hass.states.async_set("sensor.flow", "30", {"unit_of_measurement": "°C"})
         hass.states.async_set(
             "climate.bath",
@@ -102,6 +114,7 @@ async def test_llm_tools(hass: HomeAssistant, setup_entry) -> None:
     names = {tool.name for tool in api.tools}
     assert names == {
         "heatpump_describe",
+        "heatpump_discover_sensors",
         "heatpump_analyze_cycles",
         "heatpump_heating_curve",
         "heating_rooms",
@@ -123,6 +136,10 @@ async def test_llm_tools(hass: HomeAssistant, setup_entry) -> None:
     assert "insufficient_valve_history" in codes
     assert "undersupplied_room" not in codes
 
+    found = await api.async_call_tool(llm.ToolInput("heatpump_discover_sensors", {}))
+    assert found.data["roles"]["outdoor_temp_entity"]["suggested"] == "sensor.outdoor"
+    assert found.data["room_thermostats"] == ["climate.bath"]
+
     cycles = await api.async_call_tool(llm.ToolInput("heatpump_analyze_cycles", {"days": 2}))
     assert cycles.data["cycles_complete"] >= 14
 
@@ -132,9 +149,20 @@ async def test_unload(hass: HomeAssistant, setup_entry) -> None:
 
 
 async def test_config_flow_creates_entry(hass: HomeAssistant, recorder_mock) -> None:
-    hass.states.async_set("sensor.hp_power", "40", {"unit_of_measurement": "W", "device_class": "power"})
+    hass.states.async_set(
+        "sensor.hp_power",
+        "40",
+        {"unit_of_measurement": "W", "device_class": "power", "friendly_name": "Heat pump power"},
+    )
     result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": config_entries.SOURCE_USER})
     assert result["type"] == "form"
+    # the form is pre-filled from role discovery
+    suggested = {
+        str(k): k.description["suggested_value"]
+        for k in result["data_schema"].schema
+        if isinstance(k.description, dict)
+    }
+    assert suggested["power_entity"] == "sensor.hp_power"
     with patch("custom_components.heatpump_insights.async_setup_entry", return_value=True):
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"], {"name": "Heat pump", "power_entity": "sensor.hp_power"}

@@ -26,6 +26,7 @@ from .const import (
     ROLE_UNLOCKS,
     ROLES,
 )
+from .discover import discover
 from .runner import (
     async_run_curve,
     async_run_cycles,
@@ -49,7 +50,9 @@ API_PROMPT = (
     "suggest setting changes for 'act' findings, one at a time, and never recommend physical "
     "work (flushing, balancing, replacing parts) - at most suggest discussing a persistent "
     "pattern with the installer. (4) Never present an analysis as available unless "
-    "heatpump_describe lists it. These tools never change settings. "
+    "heatpump_describe lists it. These tools never change settings. If roles are missing "
+    "or the user asks which sensors to use, call heatpump_discover_sensors and let the user "
+    "confirm; never guess between candidates. "
     "Before talking about the heating curve, combine heatpump_heating_curve with heating_rooms."
 )
 
@@ -241,6 +244,40 @@ class RoomsTool(llm.Tool):
         return llm.ToolResult(data=data)
 
 
+class DiscoverSensorsTool(llm.Tool):
+    name = "heatpump_discover_sensors"
+    title = "Find heat pump sensors"
+    description = (
+        "Scan all entities and rank, for each role (power, outdoor, flow, return, heating "
+        "circuit flow and target, heat meter, curve slope, high pressure, hot gas, rooms), the "
+        "sensors that fit, with the reasons. Works for any vendor. Use it to help the user "
+        "set up or complete the role mapping; it does not change anything."
+    )
+    annotations = READ_ONLY
+    integration = DOMAIN
+
+    async def async_call(
+        self, hass: HomeAssistant, tool_input: llm.ToolInput, llm_context: llm.LLMContext
+    ) -> llm.ToolResult:
+        roles, rooms = discover(hass)
+        assigned = {}
+        for entry in _entries(hass):
+            settings = settings_of(entry)
+            assigned[entry.title] = {role: settings.get(role) for role in roles if settings.get(role)}
+        return llm.ToolResult(
+            data={
+                "roles": roles,
+                "room_thermostats": rooms,
+                "assigned": assigned,
+                "how_to_apply": (
+                    "Only the user can assign roles: Settings → Devices & services → Heat Pump "
+                    "Insights → Configure. 'suggested' is set only when one sensor clearly fits; "
+                    "otherwise show the candidates and ask the user which one is right."
+                ),
+            }
+        )
+
+
 class HeatPumpInsightsAPI(llm.API):
     """One API for all configured heat pumps."""
 
@@ -252,5 +289,11 @@ class HeatPumpInsightsAPI(llm.API):
             api=self,
             api_prompt=API_PROMPT,
             llm_context=llm_context,
-            tools=[DescribeTool(), AnalyzeCyclesTool(), HeatingCurveTool(), RoomsTool()],
+            tools=[
+                DescribeTool(),
+                DiscoverSensorsTool(),
+                AnalyzeCyclesTool(),
+                HeatingCurveTool(),
+                RoomsTool(),
+            ],
         )

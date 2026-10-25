@@ -45,6 +45,7 @@ for reversible settings – the tools never recommend physical work.
 | Tool | Needs | Answers |
 |---|---|---|
 | `heatpump_describe` | – | Which heat pumps and sensors are configured, which analyses are available, what is missing |
+| `heatpump_discover_sensors` | – | Finds the right sensors for each role on any heat pump and gives the reasons; the user confirms |
 | `heatpump_analyze_cycles` ✅ | power (+ outdoor temp) | How often does the compressor start? Is it short cycling? When – on mild days? |
 | `heatpump_heating_curve` ✅ | circuit flow (or controller target) + outdoor temp | What is my real heating curve (K/K, flow at 0 / −10 °C)? Does the heat source deliver it? |
 | `heating_rooms` ✅ | room thermostats (+ valves) | Which rooms are too warm or too cold? How often are their valves open? Which room limits the curve? |
@@ -52,6 +53,15 @@ for reversible settings – the tools never recommend physical work.
 | `heatpump_efficiency` 🔜 | heat meter | Real COP and seasonal performance factor |
 
 All tools are **read-only**. Nothing is ever controlled.
+
+## Works with any heat pump
+
+There is no list of supported models. Home Assistant describes every sensor the same way
+(type, unit, name, device), so Heat Pump Insights recognises the roles itself – in English,
+German, French, Dutch, Scandinavian and Italian wording, for ISG, ViCare, Daikin, Aquarea/HeishaMon,
+Luxtronik, ESPHome sensors and anything else. The setup form is pre-filled where one sensor
+clearly fits; where two fit equally well, you (or Claude, asking you) choose. Unknown wording? Add
+the word to `analysis/discovery.py` – one line helps every user of that integration.
 
 ## Dashboard
 
