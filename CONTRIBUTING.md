@@ -18,7 +18,7 @@ Thank you! Heat Pump Insights only works for "every heat pump" if owners of ever
 pip install pytest ruff
 python -m pytest -q          # analysis core tests, no Home Assistant needed
 ruff check . && ruff format --check .
-python tools/make_figures.py # regenerate docs/figures (needs matplotlib, numpy)
+python tools/make_figures.py # regenerate docs/figures (needs numpy)
 ```
 
 Rules:
