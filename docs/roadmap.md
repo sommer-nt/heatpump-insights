@@ -15,8 +15,11 @@ Milestones are gated by the [validation plan](validation.md), not by dates.
 - [ ] Tune cycle detection on real data; regression tests per fixture
 - [ ] Operating-mode role (heating / hot water / defrost) to split runs
 
-## v0.3 – Heating curve and energy signature
-- [ ] `heatpump_heating_curve` on long-term statistics
+## v0.2+ – Heating curve and rooms ✅
+- [x] `heatpump_heating_curve` on long-term statistics (controller target + actual flow, robust fit)
+- [x] `heating_rooms`: room comfort from any climate entity, overheated and limiting rooms
+
+## v0.3 – Energy signature
 - [ ] `heatpump_energy_signature`: before/after, similar days, degree days
 - [ ] Automatic change detection for setting entities (curve slope/shift as HA entities)
 

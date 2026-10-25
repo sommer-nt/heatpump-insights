@@ -27,8 +27,8 @@ LLM             = interpretation (dialogue in your language)
 
 ## Status
 
-**Early development (v0.1).** The first tool, `heatpump_analyze_cycles`, is implemented and
-tested on synthetic data. Validation against real installations is the next milestone – see
+**Early development (v0.2).** Cycle, heating curve and room analyses are implemented and
+tested; cycle detection has been checked against a vendor compressor status on a first real installation. Validation against real installations is the next milestone – see
 [validation plan](docs/validation.md). **Help wanted: owners willing to share anonymised data.**
 
 ## What it does
@@ -37,7 +37,8 @@ tested on synthetic data. Validation against real installations is the next mile
 |---|---|---|
 | `heatpump_describe` | – | Which heat pumps and sensors are configured, what is missing and what it would unlock |
 | `heatpump_analyze_cycles` ✅ | power (+ outdoor temp) | How often does the compressor start? Is it short cycling? When – on mild days? |
-| `heatpump_heating_curve` 🔜 | flow + outdoor temp | Is the heating curve too steep or too flat? Where is the heating limit? |
+| `heatpump_heating_curve` ✅ | circuit flow (or controller target) + outdoor temp | What is my real heating curve (K/K, flow at 0 / −10 °C)? Does the heat source deliver it? |
+| `heating_rooms` ✅ | room thermostats (climate) | Which rooms are too warm or too cold? Which room limits the curve? |
 | `heatpump_energy_signature` 🔜 | energy + outdoor temp | Did my change actually save energy, weather-corrected? Similar days compared |
 | `heatpump_spread` 🔜 | flow + return temp | Is the flow/return spread healthy for heating and hot water? |
 | `heatpump_efficiency` 🔜 | heat meter | Real COP and seasonal performance factor |

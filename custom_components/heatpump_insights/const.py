@@ -10,6 +10,10 @@ CONF_OUTDOOR_TEMP = "outdoor_temp_entity"
 CONF_FLOW_TEMP = "flow_temp_entity"
 CONF_RETURN_TEMP = "return_temp_entity"
 CONF_HEAT_ENERGY = "heat_energy_entity"
+CONF_CIRCUIT_FLOW = "circuit_flow_temp_entity"
+CONF_CIRCUIT_TARGET = "circuit_flow_target_entity"
+CONF_CURVE_SLOPE = "curve_slope_entity"
+CONF_ROOMS = "room_entities"
 
 ROLES = {
     CONF_POWER: "Electrical power of the heat pump (required)",
@@ -17,6 +21,10 @@ ROLES = {
     CONF_FLOW_TEMP: "Flow (supply) water temperature",
     CONF_RETURN_TEMP: "Return water temperature",
     CONF_HEAT_ENERGY: "Heat energy meter (thermal kWh)",
+    CONF_CIRCUIT_FLOW: "Heating circuit flow temperature (what the heating curve controls)",
+    CONF_CIRCUIT_TARGET: "Target flow temperature calculated by the controller",
+    CONF_CURVE_SLOPE: "Heating curve slope setting",
+    CONF_ROOMS: "Room thermostats (climate entities)",
 }
 
 # Which analysis each optional role unlocks, so the assistant can tell the user
@@ -26,6 +34,9 @@ ROLE_UNLOCKS = {
     CONF_FLOW_TEMP: "heating curve analysis",
     CONF_RETURN_TEMP: "flow/return spread",
     CONF_HEAT_ENERGY: "real COP / seasonal performance factor",
+    CONF_CIRCUIT_FLOW: "heating curve analysis (actual curve)",
+    CONF_CIRCUIT_TARGET: "heating curve analysis (controller curve, delivery check)",
+    CONF_ROOMS: "room comfort: overheated rooms, the room that limits the curve",
 }
 
 CONF_ON_THRESHOLD_W = "on_threshold_w"
@@ -34,3 +45,6 @@ DEFAULT_SHORT_CYCLE_MIN = 10
 
 MAX_DAYS = 10
 """Home Assistant keeps full-resolution history for 10 days by default."""
+
+MAX_CURVE_DAYS = 60
+"""The curve uses hourly long-term statistics, which are kept much longer."""

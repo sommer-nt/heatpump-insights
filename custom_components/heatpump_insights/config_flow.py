@@ -11,12 +11,16 @@ from homeassistant.core import callback
 from homeassistant.helpers import selector
 
 from .const import (
+    CONF_CIRCUIT_FLOW,
+    CONF_CIRCUIT_TARGET,
+    CONF_CURVE_SLOPE,
     CONF_FLOW_TEMP,
     CONF_HEAT_ENERGY,
     CONF_ON_THRESHOLD_W,
     CONF_OUTDOOR_TEMP,
     CONF_POWER,
     CONF_RETURN_TEMP,
+    CONF_ROOMS,
     CONF_SHORT_CYCLE_MIN,
     DEFAULT_SHORT_CYCLE_MIN,
     DOMAIN,
@@ -39,6 +43,14 @@ def _roles_schema(values: dict[str, Any]) -> dict:
         opt(CONF_FLOW_TEMP): _sensor("temperature"),
         opt(CONF_RETURN_TEMP): _sensor("temperature"),
         opt(CONF_HEAT_ENERGY): _sensor("energy"),
+        opt(CONF_CIRCUIT_FLOW): _sensor("temperature"),
+        opt(CONF_CIRCUIT_TARGET): _sensor("temperature"),
+        opt(CONF_CURVE_SLOPE): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=["number", "input_number", "sensor"])
+        ),
+        opt(CONF_ROOMS): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain="climate", multiple=True)
+        ),
     }
 
 

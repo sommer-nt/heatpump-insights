@@ -10,14 +10,22 @@
           "outdoor_temp_entity": "Außentemperatur",
           "flow_temp_entity": "Vorlauftemperatur",
           "return_temp_entity": "Rücklauftemperatur",
-          "heat_energy_entity": "Wärmemenge (thermisch)"
+          "heat_energy_entity": "Wärmemenge (thermisch)",
+          "circuit_flow_temp_entity": "Vorlauf Heizkreis",
+          "circuit_flow_target_entity": "Soll-Vorlauf (Regler)",
+          "curve_slope_entity": "Heizkurven-Steilheit",
+          "room_entities": "Raumthermostate"
         },
         "data_description": {
           "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
           "outdoor_temp_entity": "Schaltet Takten nach Wetter, Energiekennlinie und Heizkurve frei.",
           "flow_temp_entity": "Vorlauftemperatur des Heizwassers. Schaltet die Heizkurven-Analyse frei.",
           "return_temp_entity": "Schaltet die Spreizung frei.",
-          "heat_energy_entity": "Wärmemengenzähler. Schaltet echte Arbeitszahl (COP/JAZ) frei."
+          "heat_energy_entity": "Wärmemengenzähler. Schaltet echte Arbeitszahl (COP/JAZ) frei.",
+          "circuit_flow_temp_entity": "Vorlauftemperatur des Heizkreises, also das, was die Heizkurve regelt (nach Puffer oder Mischer). Schaltet die Heizkurven-Analyse frei.",
+          "circuit_flow_target_entity": "Die Vorlauftemperatur, die der Regler aus seiner Heizkurve berechnet. Ergibt die sauberste Kurve und zeigt, ob sie erreicht wird.",
+          "curve_slope_entity": "Die Steilheit-Einstellung deines Reglers, zur Einordnung.",
+          "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt."
         }
       }
     },
@@ -36,7 +44,11 @@
           "return_temp_entity": "Rücklauftemperatur",
           "heat_energy_entity": "Wärmemenge (thermisch)",
           "on_threshold_w": "Einschaltschwelle Verdichter",
-          "short_cycle_minutes": "Grenze Kurztakt"
+          "short_cycle_minutes": "Grenze Kurztakt",
+          "circuit_flow_temp_entity": "Vorlauf Heizkreis",
+          "circuit_flow_target_entity": "Soll-Vorlauf (Regler)",
+          "curve_slope_entity": "Heizkurven-Steilheit",
+          "room_entities": "Raumthermostate"
         },
         "data_description": {
           "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
@@ -45,7 +57,11 @@
           "return_temp_entity": "Schaltet die Spreizung frei.",
           "heat_energy_entity": "Wärmemengenzähler. Schaltet echte Arbeitszahl (COP/JAZ) frei.",
           "on_threshold_w": "Leer lassen für automatische Erkennung aus Ruhe- und Laufniveau.",
-          "short_cycle_minutes": "Vollständige Läufe kürzer als dieser Wert gelten als Kurztakt (Standard 10 min)."
+          "short_cycle_minutes": "Vollständige Läufe kürzer als dieser Wert gelten als Kurztakt (Standard 10 min).",
+          "circuit_flow_temp_entity": "Vorlauftemperatur des Heizkreises, also das, was die Heizkurve regelt (nach Puffer oder Mischer). Schaltet die Heizkurven-Analyse frei.",
+          "circuit_flow_target_entity": "Die Vorlauftemperatur, die der Regler aus seiner Heizkurve berechnet. Ergibt die sauberste Kurve und zeigt, ob sie erreicht wird.",
+          "curve_slope_entity": "Die Steilheit-Einstellung deines Reglers, zur Einordnung.",
+          "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt."
         }
       }
     }

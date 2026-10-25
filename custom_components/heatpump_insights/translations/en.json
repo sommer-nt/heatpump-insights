@@ -10,14 +10,22 @@
           "outdoor_temp_entity": "Outdoor temperature",
           "flow_temp_entity": "Flow temperature",
           "return_temp_entity": "Return temperature",
-          "heat_energy_entity": "Heat energy (thermal)"
+          "heat_energy_entity": "Heat energy (thermal)",
+          "circuit_flow_temp_entity": "Heating circuit flow temperature",
+          "circuit_flow_target_entity": "Target flow temperature (controller)",
+          "curve_slope_entity": "Heating curve slope",
+          "room_entities": "Room thermostats"
         },
         "data_description": {
           "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
           "outdoor_temp_entity": "Unlocks cycling vs. weather, energy signature and heating curve.",
           "flow_temp_entity": "Supply water temperature. Unlocks heating curve analysis.",
           "return_temp_entity": "Unlocks flow/return spread.",
-          "heat_energy_entity": "Thermal energy meter. Unlocks real COP and seasonal performance factor."
+          "heat_energy_entity": "Thermal energy meter. Unlocks real COP and seasonal performance factor.",
+          "circuit_flow_temp_entity": "Flow temperature of the heating circuit, i.e. what the heating curve controls (after a buffer or mixer). Unlocks the heating curve analysis.",
+          "circuit_flow_target_entity": "The flow temperature the controller calculates from its heating curve. Gives the cleanest curve and shows whether it is delivered.",
+          "curve_slope_entity": "The slope setting of your controller, reported for reference.",
+          "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve."
         }
       }
     },
@@ -36,7 +44,11 @@
           "return_temp_entity": "Return temperature",
           "heat_energy_entity": "Heat energy (thermal)",
           "on_threshold_w": "Compressor on-threshold",
-          "short_cycle_minutes": "Short cycle limit"
+          "short_cycle_minutes": "Short cycle limit",
+          "circuit_flow_temp_entity": "Heating circuit flow temperature",
+          "circuit_flow_target_entity": "Target flow temperature (controller)",
+          "curve_slope_entity": "Heating curve slope",
+          "room_entities": "Room thermostats"
         },
         "data_description": {
           "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
@@ -45,7 +57,11 @@
           "return_temp_entity": "Unlocks flow/return spread.",
           "heat_energy_entity": "Thermal energy meter. Unlocks real COP and seasonal performance factor.",
           "on_threshold_w": "Leave empty for automatic detection from idle and running levels.",
-          "short_cycle_minutes": "Complete runs shorter than this count as short cycles (default 10 min)."
+          "short_cycle_minutes": "Complete runs shorter than this count as short cycles (default 10 min).",
+          "circuit_flow_temp_entity": "Flow temperature of the heating circuit, i.e. what the heating curve controls (after a buffer or mixer). Unlocks the heating curve analysis.",
+          "circuit_flow_target_entity": "The flow temperature the controller calculates from its heating curve. Gives the cleanest curve and shows whether it is delivered.",
+          "curve_slope_entity": "The slope setting of your controller, reported for reference.",
+          "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve."
         }
       }
     }

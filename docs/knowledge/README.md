@@ -8,7 +8,8 @@ pattern from Home Assistant data, which thresholds we use **and how certain they
 |---|---|---|
 | [Fundamentals](fundamentals.md) | COP, SPF, Carnot, why flow temperature matters, heat output from flow rate | all |
 | [Compressor cycling](cycling.md) | Short cycling, the modulation gap, causes and remedies, detection method | `heatpump_analyze_cycles` |
-| [Heating curve](heating-curve.md) | Slope, shift, heating limit, tuning procedure, fitting the actual curve | `heatpump_heating_curve` (planned) |
+| [Heating curve](heating-curve.md) | Slope, shift, heating limit, tuning procedure, fitting the actual curve | `heatpump_heating_curve` |
+| [Room comfort](rooms.md) | Overheated rooms, the room that limits the curve | `heating_rooms` |
 | [Energy signature](energy-signature.md) | Weather-normalised comparisons, degree days, similar days | `heatpump_energy_signature` (planned) |
 | [Flow/return spread](flow-return-spread.md) | What ΔT tells you about flow rate and emitters | `heatpump_spread` (planned) |
 | [Hot water and defrost](hot-water-and-defrost.md) | Two operating modes that distort every other analysis | all |

@@ -32,10 +32,10 @@ A good answer:
   remedies (see knowledge base), one change at a time,
 - suggests re-running the analysis after a week to verify.
 
-## UC3 – "Should I change my heating curve?" 🔜
+## UC3 – "Should I change my heating curve?" ✅
 
 **Who:** owner with flow and outdoor temperature (most vendor integrations).
-**Tools:** `heatpump_heating_curve`, `heatpump_analyze_cycles`, room temperatures if mapped.
+**Tools:** `heatpump_heating_curve`, `heating_rooms`, `heatpump_analyze_cycles`.
 
 A good answer:
 - shows the fitted actual curve (slope, offset, heating limit) and its scatter,

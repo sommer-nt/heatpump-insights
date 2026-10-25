@@ -42,14 +42,22 @@ common starting points. *Heuristic.*
 4. Go down until the coldest room you care about is *just* comfortable; single rooms that stay
    cold are a hydraulic balancing / emitter issue, not a curve issue.
 
-## How we will analyse it (`heatpump_heating_curve`, planned)
+## How we analyse it (`heatpump_heating_curve`)
 
-- Hourly means of flow and outdoor temperature from long-term statistics (works over whole seasons).
-- Only hours with the compressor running in **heating** mode (exclude hot water, defrost,
-  standstill – flow temperature then says nothing about the curve).
-- Linear fit (robust regression) → slope, flow temperature at 0 °C and at design temperature,
-  scatter (R², residuals). Curvature check with a quadratic term.
-- With room temperatures: are rooms above setpoint? → headroom to lower the curve.
-- With the energy signature: estimated heating limit (zero crossing).
-- Output always includes the number of hours used and the outdoor temperature range covered –
-  a curve fitted only between 5 and 12 °C says little about −10 °C.
+- **Hourly means** from Home Assistant's long-term statistics, so the window can span up to
+  60 days (sensors without statistics fall back to the 10-day state history).
+- If the controller exposes its **target flow temperature**, the curve is fitted on that target:
+  it is the controller's own curve, undisturbed by hot water, defrost or standstill. The measured
+  flow is then used to check delivery (`tracking`: mean actual − target, share of hours more than
+  2 K short). Without a target, the measured heating-circuit flow is used.
+- **Robust line fit (Theil–Sen):** the median of all pairwise slopes. Hot-water or defrost hours
+  barely move it – unlike an ordinary least-squares fit.
+- Output: slope in **K per K** (flow rise per kelvin colder), flow at +10 / 0 / −10 °C (each
+  marked when extrapolated), R², residual spread, hours used, covered outdoor range, and the
+  controller's slope setting for reference. Vendor slope numbers use their own scales; the
+  fitted K/K slope is comparable across brands.
+- Findings: `narrow_outdoor_range` (< 8 K covered – colder weather is extrapolated),
+  `curve_fit_poor` (R² < 0.5), `poor_tracking` (≥ 20 % of hours undersupplied),
+  `insufficient_data` (< 24 hours). *Heuristics, to be validated.*
+- Combine with [room comfort](rooms.md) before recommending a change: overheated rooms mean the
+  curve can go down; a single cold room is a balancing or emitter issue.

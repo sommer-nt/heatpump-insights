@@ -66,10 +66,14 @@ only **roles**:
 |---|---|---|
 | `power` (required) | Shelly / smart meter on the heat pump circuit, vendor power sensor, compressor frequency | cycling, runtime, electricity per day |
 | `outdoor_temp` | heat pump's own outdoor sensor, weather station, weather integration | cycling vs. weather, energy signature, heating curve |
-| `flow_temp` | vendor sensor, DS18B20 on the pipe | heating curve |
+| `flow_temp` | vendor sensor, DS18B20 on the pipe | generator flow (reference) |
+| `circuit_flow_temp` | heating-circuit flow after buffer/mixer | heating curve (actual) |
+| `circuit_flow_target` | controller's calculated target flow | heating curve (controller curve, delivery check) |
+| `curve_slope` | controller's slope setting (number entity) | reported for reference |
+| `rooms` | any `climate` entities | room comfort, limiting room |
 | `return_temp` | vendor sensor, DS18B20 | spread |
 | `heat_energy` | heat meter (M-Bus, MQTT), vendor heat counter | real COP / SPF |
-| *planned:* `operating_mode`, `compressor_state`, `room_temp[]`, `dhw_temp`, `curve_slope`, `curve_shift`, `electric_energy`, `backup_heater` | | mode split, comfort, change detection |
+| *planned:* `operating_mode`, `compressor_state`, `dhw_temp`, `curve_shift`, `electric_energy`, `backup_heater`, `valve_state[]` | | mode split, change detection, throttled rooms |
 
 Today the user picks entities in the config flow. **Device profiles** (see
 [profiles/](../profiles/README.md)) will pre-fill the mapping for known integrations.
