@@ -1,0 +1,25 @@
+# Stiebel Eltron heat pumps via the ISG (Modbus) – HACS integration "stiebel_eltron_isg".
+# Entity IDs below are the integration's defaults (prefix sensor.stiebel_eltron_isg_...).
+integration: stiebel_eltron_isg
+name: Stiebel Eltron ISG
+verified_with:
+  - WPM 3
+roles:
+  outdoor_temp:      [{entity_id_suffix: outdoor_temperature}]
+  flow_temp:         [{entity_id_suffix: flow_temperature_wp}]       # heat pump outlet
+  return_temp:       [{entity_id_suffix: return_temperature_wp1}]
+  compressor_state:  [{entity_id_suffix: compressor}]                # binary_sensor – ground truth for runs
+  dhw_active:        [{entity_id_suffix: is_heating_boiler}]         # binary_sensor
+  defrost_active:    [{entity_id_suffix: evaporator_defrost}]        # binary_sensor
+  backup_heater:     [{entity_id_suffix: nhz_stages_running}]        # binary_sensor
+  room_temp:         [{entity_id_suffix: actual_temperature_fek}]    # FEK room unit
+  curve_slope:       [{entity_id_suffix: heating_curve_rise_hk1}]    # number – change detection
+  heat_produced_heating: [{entity_id_suffix: produced_heating_total}]   # kWh, controller estimate
+  electricity_heating:   [{entity_id_suffix: consumed_heating_total}]   # kWh, controller estimate
+  heat_produced_dhw:     [{entity_id_suffix: produced_water_heating_total}]
+  electricity_dhw:       [{entity_id_suffix: consumed_water_heating_total}]
+notes: >
+  Status values are polled (~30–60 s), so run starts lag about one minute behind a fast
+  sub-meter. Produced heat is computed by the controller, not measured by a heat meter – treat
+  COP from these counters as an estimate. Power is not provided; a sub-meter (e.g. Shelly) on
+  the heat pump circuit gives the best cycle data.

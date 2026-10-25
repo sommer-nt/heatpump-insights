@@ -1,0 +1,23 @@
+[project]
+name = "heatpump-insights"
+version = "0.1.0"
+description = "Vendor-independent heat pump analysis for Home Assistant"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["analysis", "synth"]
+
+[tool.ruff.lint.per-file-ignores]
+"streamlit_app.py" = ["E501"]

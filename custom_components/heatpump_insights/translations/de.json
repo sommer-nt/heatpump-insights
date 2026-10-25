@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Wärmepumpe hinzufügen",
+        "description": "Ordne deine Sensoren Rollen zu. Nur die elektrische Leistung ist Pflicht; jeder weitere Sensor schaltet mehr Analysen frei. Es wird nichts gesteuert – die Werkzeuge lesen nur die Historie.",
+        "data": {
+          "name": "Name",
+          "power_entity": "Elektrische Leistung",
+          "outdoor_temp_entity": "Außentemperatur",
+          "flow_temp_entity": "Vorlauftemperatur",
+          "return_temp_entity": "Rücklauftemperatur",
+          "heat_energy_entity": "Wärmemenge (thermisch)"
+        },
+        "data_description": {
+          "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
+          "outdoor_temp_entity": "Schaltet Takten nach Wetter, Energiekennlinie und Heizkurve frei.",
+          "flow_temp_entity": "Vorlauftemperatur des Heizwassers. Schaltet die Heizkurven-Analyse frei.",
+          "return_temp_entity": "Schaltet die Spreizung frei.",
+          "heat_energy_entity": "Wärmemengenzähler. Schaltet echte Arbeitszahl (COP/JAZ) frei."
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Dieser Leistungssensor wird schon von einer anderen Wärmepumpe genutzt."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Einstellungen Wärmepumpe",
+        "data": {
+          "power_entity": "Elektrische Leistung",
+          "outdoor_temp_entity": "Außentemperatur",
+          "flow_temp_entity": "Vorlauftemperatur",
+          "return_temp_entity": "Rücklauftemperatur",
+          "heat_energy_entity": "Wärmemenge (thermisch)",
+          "on_threshold_w": "Einschaltschwelle Verdichter",
+          "short_cycle_minutes": "Grenze Kurztakt"
+        },
+        "data_description": {
+          "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
+          "outdoor_temp_entity": "Schaltet Takten nach Wetter, Energiekennlinie und Heizkurve frei.",
+          "flow_temp_entity": "Vorlauftemperatur des Heizwassers. Schaltet die Heizkurven-Analyse frei.",
+          "return_temp_entity": "Schaltet die Spreizung frei.",
+          "heat_energy_entity": "Wärmemengenzähler. Schaltet echte Arbeitszahl (COP/JAZ) frei.",
+          "on_threshold_w": "Leer lassen für automatische Erkennung aus Ruhe- und Laufniveau.",
+          "short_cycle_minutes": "Vollständige Läufe kürzer als dieser Wert gelten als Kurztakt (Standard 10 min)."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "heatpump_insights",
+  "name": "Heat Pump Insights",
+  "codeowners": ["@sommer-nt"],
+  "config_flow": true,
+  "dependencies": ["recorder"],
+  "documentation": "https://github.com/sommer-nt/heatpump-insights",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/sommer-nt/heatpump-insights/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

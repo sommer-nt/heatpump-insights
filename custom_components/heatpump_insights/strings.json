@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add a heat pump",
+        "description": "Assign your sensors to roles. Only the electrical power is required; every extra sensor unlocks more analyses. Nothing is controlled – the tools only read history.",
+        "data": {
+          "name": "Name",
+          "power_entity": "Electrical power",
+          "outdoor_temp_entity": "Outdoor temperature",
+          "flow_temp_entity": "Flow temperature",
+          "return_temp_entity": "Return temperature",
+          "heat_energy_entity": "Heat energy (thermal)"
+        },
+        "data_description": {
+          "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
+          "outdoor_temp_entity": "Unlocks cycling vs. weather, energy signature and heating curve.",
+          "flow_temp_entity": "Supply water temperature. Unlocks heating curve analysis.",
+          "return_temp_entity": "Unlocks flow/return spread.",
+          "heat_energy_entity": "Thermal energy meter. Unlocks real COP and seasonal performance factor."
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This power sensor is already used by another heat pump."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Heat pump settings",
+        "data": {
+          "power_entity": "Electrical power",
+          "outdoor_temp_entity": "Outdoor temperature",
+          "flow_temp_entity": "Flow temperature",
+          "return_temp_entity": "Return temperature",
+          "heat_energy_entity": "Heat energy (thermal)",
+          "on_threshold_w": "Compressor on-threshold",
+          "short_cycle_minutes": "Short cycle limit"
+        },
+        "data_description": {
+          "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
+          "outdoor_temp_entity": "Unlocks cycling vs. weather, energy signature and heating curve.",
+          "flow_temp_entity": "Supply water temperature. Unlocks heating curve analysis.",
+          "return_temp_entity": "Unlocks flow/return spread.",
+          "heat_energy_entity": "Thermal energy meter. Unlocks real COP and seasonal performance factor.",
+          "on_threshold_w": "Leave empty for automatic detection from idle and running levels.",
+          "short_cycle_minutes": "Complete runs shorter than this count as short cycles (default 10 min)."
+        }
+      }
+    }
+  }
+}
