@@ -44,7 +44,7 @@ st.markdown(
            text-transform: uppercase; opacity: .7; margin-bottom: 10px; }
     .finding { padding: 12px 16px; border-radius: 12px; margin: 6px 0; border: 1px solid rgba(138,148,166,.25); }
     .finding b { font-family: 'Inter Tight', sans-serif; }
-    .sev-problem { border-left: 4px solid #ef4444; } .sev-attention { border-left: 4px solid #f5a524; }
+    .sev-act { border-left: 4px solid #ef4444; } .sev-check { border-left: 4px solid #f5a524; }
     .sev-info { border-left: 4px solid #3d8bff; }
     div[data-testid="stMetricValue"] { font-family: 'Inter Tight', sans-serif; }
     </style>

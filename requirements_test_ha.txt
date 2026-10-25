@@ -1,0 +1,6 @@
+# Integration tests in a real Home Assistant test instance (tests_ha/).
+pytest-homeassistant-custom-component==0.13.375
+# needed by the conversation component that the LLM API loads
+gazetteer-matcher==1.1.0
+hassil==3.12.1
+home-assistant-intents==2026.10.6

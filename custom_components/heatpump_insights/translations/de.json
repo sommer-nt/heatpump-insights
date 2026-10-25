@@ -71,5 +71,51 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "starts_today": {
+        "name": "Verdichterstarts heute"
+      },
+      "runtime_today": {
+        "name": "Verdichter-Laufzeit heute"
+      },
+      "starts_per_day": {
+        "name": "Verdichterstarts pro Tag (7 Tage)"
+      },
+      "run_time_median": {
+        "name": "Laufzeit Median (7 Tage)"
+      },
+      "short_cycle_share": {
+        "name": "Kurztakte (7 Tage)"
+      },
+      "cycling_rating": {
+        "name": "Bewertung Takten",
+        "state": {
+          "good": "Gut",
+          "attention": "Auffällig",
+          "problem": "Problem",
+          "insufficient_data": "Zu wenig Daten"
+        }
+      },
+      "curve_slope": {
+        "name": "Heizkurve Steigung (tatsächlich, 30 Tage)"
+      },
+      "flow_deviation": {
+        "name": "Vorlauf Ist minus Soll (30 Tage)"
+      },
+      "overheated_rooms": {
+        "name": "Überwärmte Räume (7 Tage)"
+      },
+      "limiting_room": {
+        "name": "Limitierender Raum (7 Tage)"
+      },
+      "valve_open": {
+        "name": "Ventil offen 24 h {room}"
+      },
+      "configuration": {
+        "name": "Konfiguration"
+      }
+    }
   }
 }

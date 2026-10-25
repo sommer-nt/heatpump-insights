@@ -22,7 +22,12 @@ Milestones are gated by the [validation plan](validation.md), not by dates.
 - [ ] Upstream: expose the HmIP-BWTH relay state in Home Assistant's Homematic IP integration
 - [ ] Correlate closing circuits with compressor starts
 
-## v0.3 – Energy signature
+## v0.4 – Base for every user ✅
+- [x] Key figures as sensors with long-term statistics (cycling, heating curve, rooms, valve open share)
+- [x] Dashboard strategy `custom:heatpump-insights`, generated from roles – no manual dashboard needed
+- [x] Graded findings (info / check / act) with evidence; no physical-work recommendations
+
+## v0.5 – Energy signature
 - [ ] `heatpump_energy_signature`: before/after, similar days, degree days
 - [ ] Automatic change detection for setting entities (curve slope/shift as HA entities)
 

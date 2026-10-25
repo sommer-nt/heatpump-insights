@@ -129,3 +129,14 @@ def test_binary_on_off_signal_gets_automatic_threshold():
     assert r.threshold_method == "binary"
     assert r.cycles_complete == 58  # runs at 300 s + k·1500 s within one day
     assert r.rating == "problem"
+
+
+def test_short_cycling_needs_three_days_for_act():
+    runs = periodic_runs(1800, 360, 900, DAY, first_offset_s=600)
+    one_day = analyze_cycles(power_series(T0, T0 + DAY, runs), T0, T0 + DAY)
+    assert next(f for f in one_day.findings if f.code == "short_cycling").severity == "check"
+    runs = periodic_runs(1800, 360, 900, 4 * DAY, first_offset_s=600)
+    four_days = analyze_cycles(power_series(T0, T0 + 4 * DAY, runs), T0, T0 + 4 * DAY)
+    finding = next(f for f in four_days.findings if f.code == "short_cycling")
+    assert finding.severity == "act"
+    assert "4.0 days" in finding.evidence

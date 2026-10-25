@@ -33,9 +33,9 @@ ROLES = {
 # Which analysis each optional role unlocks, so the assistant can tell the user
 # what an extra sensor would be worth.
 ROLE_UNLOCKS = {
-    CONF_OUTDOOR_TEMP: "cycling vs. weather, energy signature, heating curve",
-    CONF_FLOW_TEMP: "heating curve analysis",
-    CONF_RETURN_TEMP: "flow/return spread",
+    CONF_OUTDOOR_TEMP: "cycling vs. weather, heating curve (energy signature planned)",
+    CONF_FLOW_TEMP: "heating curve analysis (fallback if no heating circuit flow is assigned)",
+    CONF_RETURN_TEMP: "flow/return spread (analysis planned, not yet available)",
     CONF_HEAT_ENERGY: "real COP / seasonal performance factor (analysis planned, not yet available)",
     CONF_CIRCUIT_FLOW: "heating curve analysis (actual curve)",
     CONF_CIRCUIT_TARGET: "heating curve analysis (controller curve, delivery check)",

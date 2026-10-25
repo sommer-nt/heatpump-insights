@@ -71,5 +71,51 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "starts_today": {
+        "name": "Compressor starts today"
+      },
+      "runtime_today": {
+        "name": "Compressor runtime today"
+      },
+      "starts_per_day": {
+        "name": "Compressor starts per day (7 days)"
+      },
+      "run_time_median": {
+        "name": "Median run time (7 days)"
+      },
+      "short_cycle_share": {
+        "name": "Short cycles (7 days)"
+      },
+      "cycling_rating": {
+        "name": "Cycling rating",
+        "state": {
+          "good": "Good",
+          "attention": "Attention",
+          "problem": "Problem",
+          "insufficient_data": "Insufficient data"
+        }
+      },
+      "curve_slope": {
+        "name": "Heating curve slope (actual, 30 days)"
+      },
+      "flow_deviation": {
+        "name": "Flow actual minus target (30 days)"
+      },
+      "overheated_rooms": {
+        "name": "Overheated rooms (7 days)"
+      },
+      "limiting_room": {
+        "name": "Limiting room (7 days)"
+      },
+      "valve_open": {
+        "name": "Valve open 24 h {room}"
+      },
+      "configuration": {
+        "name": "Configuration"
+      }
+    }
   }
 }

@@ -200,17 +200,20 @@ def _findings(report: CurveReport, cfg: CurveConfig, span: float) -> None:
         report.findings.append(
             Finding(
                 "curve_fit_poor",
-                "attention",
-                f"Flow temperature follows the weather only loosely (R² {report.r2:.2f}). "
-                "Room-temperature influence, hot water or manual changes may dominate.",
+                "check",
+                f"Flow temperature follows the weather only loosely (R² {report.r2:.2f}). Common, "
+                "harmless reasons: mild weather with little outdoor variation, room-temperature "
+                "influence of a room unit, or setpoint changes. Not a fault by itself.",
+                f"{report.hours_used} hours with heat demand",
             )
         )
     if report.tracking and report.tracking["undersupply_share"] >= 0.2:
         report.findings.append(
             Finding(
                 "poor_tracking",
-                "attention",
+                "check",
                 f"In {report.tracking['undersupply_share']:.0%} of hours the actual flow stayed more "
                 f"than {cfg.undersupply_k:.0f} K below target.",
+                f"{report.tracking['hours']} hours with target and actual flow",
             )
         )

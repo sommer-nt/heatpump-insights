@@ -44,6 +44,12 @@ class RoomsConfig:
     few_open_share: float = 0.5
     """At most one circuit open for at least this share of the time: little water volume."""
 
+    min_valve_days: float = 3.0
+    """Valve-based statements need at least this many days of valve history."""
+
+    high_setpoint_k: float = 1.0
+    """A setpoint this far above the median of all rooms is called out as the simple explanation."""
+
 
 @dataclass(slots=True)
 class RoomsReport:
@@ -53,6 +59,8 @@ class RoomsReport:
     rooms: list[dict] = field(default_factory=list)
     overheated_rooms: list[str] = field(default_factory=list)
     limiting_room: str | None = None
+    rated_rooms: int = 0
+    """Rooms with enough data to be rated; 0 means no room statement is possible yet."""
     valves: dict | None = None
     findings: list[Finding] = field(default_factory=list)
     assumptions: list[str] = field(default_factory=list)
@@ -136,6 +144,9 @@ def analyze_rooms(
             }
         if name in valve_segs:
             entry["valve_open_share"] = _open_share(valve_segs[name])
+            entry["valve_history_days"] = round(
+                sum(sg.duration for sg in valve_segs[name] if sg.value is not None) / 86400.0, 2
+            )
         report.rooms.append(entry)
         if known > 0 and coverage >= cfg.min_coverage:
             rated.append(entry)
@@ -143,6 +154,7 @@ def analyze_rooms(
     report.rooms.sort(key=lambda r: r.get("deviation_mean_k", 0.0))
     if valve_segs:
         report.valves = _circuits(valve_segs)
+    report.rated_rooms = len(rated)
     _findings(report, rated, cfg)
     return report
 
@@ -185,6 +197,8 @@ def _circuits(valve_segs: Mapping[str, list[Segment]]) -> dict:
 
 
 def _findings(report: RoomsReport, rated: list[dict], cfg: RoomsConfig) -> None:
+    """Findings are graded: info (context), check (worth a look). Room findings never
+    reach ``act``: temperatures alone cannot prove what a circuit or a setting needs."""
     unrated = [r["room"] for r in report.rooms if r not in rated]
     if unrated:
         report.findings.append(
@@ -192,37 +206,64 @@ def _findings(report: RoomsReport, rated: list[dict], cfg: RoomsConfig) -> None:
         )
     if not rated:
         return
+    days = max((r["coverage_share"] for r in rated), default=0.0) * _window_days(report)
+    setpoints = sorted(r["setpoint_mean_c"] for r in rated)
+    median_setpoint = setpoints[len(setpoints) // 2]
+
     report.overheated_rooms = [r["room"] for r in rated if r["too_warm_share"] >= cfg.overheated_share]
     if len(report.overheated_rooms) * 2 >= len(rated):
         report.findings.append(
             Finding(
                 "rooms_overheated",
-                "attention",
+                "check",
                 f"{len(report.overheated_rooms)} of {len(rated)} rooms are mostly warmer than their "
-                "setpoint: the heating curve likely has headroom to go down.",
+                "setpoint. If this holds over several days of normal weather, the heating curve "
+                "probably has headroom to go down (in small steps).",
+                f"{days:.1f} days of room temperatures",
+            )
+        )
+
+    valve_rooms = [r for r in rated if r.get("valve_open_share") is not None]
+    short_history = [r for r in valve_rooms if r.get("valve_history_days", 0) < cfg.min_valve_days]
+    if short_history:
+        report.findings.append(
+            Finding(
+                "insufficient_valve_history",
+                "info",
+                f"Valve history covers less than {cfg.min_valve_days:.0f} days for "
+                f"{len(short_history)} room(s); valve-based statements are held back until then.",
+                f"shortest valve history {min(r['valve_history_days'] for r in short_history):.1f} days",
             )
         )
     undersupplied = [
-        r["room"]
-        for r in rated
-        if (r.get("valve_open_share") or 0) >= cfg.undersupplied_open_share
+        r
+        for r in valve_rooms
+        if r.get("valve_history_days", 0) >= cfg.min_valve_days
+        and r["valve_open_share"] >= cfg.undersupplied_open_share
         and r["too_cold_share"] >= cfg.limiting_cold_share
     ]
     if undersupplied:
         report.findings.append(
             Finding(
                 "undersupplied_room",
-                "attention",
-                "Valve open almost all the time, yet still too cold: "
-                + ", ".join(undersupplied)
-                + ". The circuit cannot deliver enough heat (flow through the circuit, hydraulic "
-                "balancing, emitter size) – or the curve is too low for this room.",
+                "check",
+                "Valve open almost all the time, yet still below setpoint: "
+                + ", ".join(r["room"] for r in undersupplied)
+                + ". First compare the setpoint with other rooms. If it is normal and this persists, "
+                "the circuit may deliver too little heat – a question for the installer, not a "
+                "setting to change blindly.",
+                ", ".join(
+                    f"{r['room']}: valve open {r['valve_open_share']:.0%} over "
+                    f"{r['valve_history_days']:.1f} days"
+                    for r in undersupplied
+                ),
             )
         )
     if (
         report.valves
         and report.valves["circuits"] >= 4
         and (report.valves["at_most_one_open_share"] or 0) >= cfg.few_open_share
+        and all(r.get("valve_history_days", 0) >= cfg.min_valve_days for r in valve_rooms)
     ):
         report.findings.append(
             Finding(
@@ -233,18 +274,32 @@ def _findings(report: RoomsReport, rated: list[dict], cfg: RoomsConfig) -> None:
                 "shorten compressor runs (less relevant with a buffer tank).",
             )
         )
+
     coldest = max(rated, key=lambda r: (r["too_cold_share"], -r["deviation_mean_k"]))
     if coldest["too_cold_share"] >= cfg.limiting_cold_share:
         report.limiting_room = coldest["room"]
+        high = coldest["setpoint_mean_c"] >= median_setpoint + cfg.high_setpoint_k
         report.findings.append(
             Finding(
                 "limiting_room",
                 "info",
-                f"{coldest['room']} is too cold {coldest['too_cold_share']:.0%} of the time and "
-                "limits how far the curve can be lowered. Check it before changing the curve "
-                "(hydraulic balancing, emitter size, setpoint).",
+                f"{coldest['room']} is below its setpoint {coldest['too_cold_share']:.0%} of the time "
+                "and limits how far the curve can be lowered. "
+                + (
+                    f"Its setpoint ({coldest['setpoint_mean_c']:.1f} °C) is higher than in most rooms "
+                    f"(median {median_setpoint:.1f} °C) – the simplest explanation."
+                    if high
+                    else "Watch whether this persists before drawing conclusions."
+                ),
+                f"mean {coldest['actual_mean_c']:.1f} °C vs setpoint {coldest['setpoint_mean_c']:.1f} °C",
             )
         )
+
+
+def _window_days(report: RoomsReport) -> float:
+    start = datetime.fromisoformat(report.window_start)
+    end = datetime.fromisoformat(report.window_end)
+    return max((end - start).total_seconds() / 86400.0, 0.0)
 
 
 _GENERIC_WORDS = {

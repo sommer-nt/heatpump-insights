@@ -15,6 +15,21 @@ pattern from Home Assistant data, which thresholds we use **and how certain they
 | [Hot water and defrost](hot-water-and-defrost.md) | Two operating modes that distort every other analysis | all |
 | [Home Assistant data](home-assistant-data.md) | Recorder retention, sampling, units, gaps – the limits of what we can see | all |
 
+## How findings are graded
+
+Every finding a tool returns carries a **severity** and the **evidence** it rests on:
+
+| Severity | Meaning | What the assistant may do |
+|---|---|---|
+| `info` | context, an observation | explain it |
+| `check` | worth watching or verifying; not proven yet | suggest watching it, name the data still missing |
+| `act` | clear data over enough days | suggest **one reversible setting change** |
+
+Physical work (flushing, hydraulic balancing, replacing parts) is never recommended by a tool;
+at most a persistent pattern is something to discuss with the installer. Simple explanations
+(a setpoint, the weather, too little data) are named first. Valve-based statements wait for at
+least 3 days of valve history.
+
 ## Confidence labels
 
 - **Physics** – follows from thermodynamics; safe to state.

@@ -62,9 +62,9 @@ def test_valve_open_but_cold_is_undersupplied():
     rooms = {"Bath": (flat(21.0), flat(23.0)), "Living": (flat(21.0), flat(21.0))}
     valves = {
         "Bath": [Sample(T0, 1.0)],
-        "Living": [Sample(T0, 1.0), Sample(T0 + DAY / 4, 0.0)],
+        "Living": [Sample(T0, 1.0), Sample(T0 + DAY, 0.0)],
     }
-    r = analyze_rooms(rooms, T0, T0 + DAY, valves=valves)
+    r = analyze_rooms(rooms, T0, T0 + 4 * DAY, valves=valves)
     by_room = {x["room"]: x for x in r.rooms}
     assert by_room["Bath"]["valve_open_share"] == pytest.approx(1.0)
     assert by_room["Living"]["valve_open_share"] == pytest.approx(0.25)
@@ -77,7 +77,7 @@ def test_power_readings_count_as_open_and_few_open_circuits():
     rooms = {n: (flat(21.0), flat(21.0)) for n in names}
     valves = {n: [Sample(T0, 0.0)] for n in names}
     valves["A"] = [Sample(T0, 1.8)]  # actuator draws 1.8 W = open
-    r = analyze_rooms(rooms, T0, T0 + DAY, valves=valves)
+    r = analyze_rooms(rooms, T0, T0 + 4 * DAY, valves=valves)
     assert r.valves == {"circuits": 4, "mean_open": 1.0, "at_most_one_open_share": 1.0}
     assert "few_open_circuits" in {f.code for f in r.findings}
 
@@ -100,3 +100,25 @@ def test_match_valves_by_group_area_and_name():
     assert matched["switch.fsm_kuche"] == "climate.kuche"
     assert matched["switch.in_area"] == "climate.flur"
     assert unmatched == ["switch.fsm_flur_dg"]  # "Flur" fits two rooms: left to the user
+
+
+def test_short_valve_history_holds_back_valve_findings():
+    rooms = {"Bath": (flat(21.0), flat(23.0)), "Living": (flat(21.0), flat(21.0))}
+    valves = {"Bath": [Sample(T0 + DAY - 3600, 1.0)], "Living": [Sample(T0 + DAY - 3600, 0.0)]}
+    r = analyze_rooms(rooms, T0, T0 + DAY, valves=valves)
+    codes = {f.code for f in r.findings}
+    assert "insufficient_valve_history" in codes
+    assert "undersupplied_room" not in codes
+
+
+def test_limiting_room_names_high_setpoint_as_simple_explanation():
+    rooms = {
+        "Bath": (flat(21.5), flat(23.0)),
+        "Living": (flat(21.0), flat(21.0)),
+        "Office": (flat(21.0), flat(21.0)),
+    }
+    r = analyze_rooms(rooms, T0, T0 + DAY)
+    finding = next(f for f in r.findings if f.code == "limiting_room")
+    assert finding.severity == "info"
+    assert "simplest explanation" in finding.message
+    assert all(f.severity in {"info", "check"} for f in r.findings)  # rooms never reach "act"

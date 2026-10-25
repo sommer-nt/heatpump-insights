@@ -26,7 +26,7 @@ from .timeseries import (
     weighted_percentile,
 )
 
-ANALYSIS_VERSION = "0.3.3"
+ANALYSIS_VERSION = "0.4.0"
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,8 +69,11 @@ class Cycle:
 class Finding:
     code: str
     severity: str
-    """``info``, ``attention`` or ``problem``."""
+    """``info`` (context), ``check`` (worth a look, not yet proven) or ``act`` (clear data,
+    a reversible setting change is justified). Physical interventions are never ``act``."""
     message: str
+    evidence: str = ""
+    """What the finding rests on: data source and amount, e.g. '49 runs over 7.0 days'."""
 
 
 @dataclass(slots=True)
@@ -91,6 +94,8 @@ class CycleReport:
     max_starts_in_one_hour: int
     runtime_share: float | None
     energy_kwh: float
+    data_days: float = 0.0
+    """Days of known power data in the window."""
     per_day: list[dict] = field(default_factory=list)
     by_outdoor_temp: list[dict] = field(default_factory=list)
     rating: str = "insufficient_data"
@@ -231,6 +236,8 @@ def analyze_cycles(
         ],
     )
 
+    report.data_days = round(cov.known_s / 86400.0, 2)
+
     if threshold is None:
         if method == "no_distinct_levels":
             report.findings.append(
@@ -346,25 +353,33 @@ def _rate(report: CycleReport, cfg: CycleConfig) -> None:
             report.rating = "good"
         return
 
+    days = report.data_days or 0.0
+    evidence = f"{report.cycles_complete} complete runs over {days:.1f} days of power data"
     severity = "good"
     share = report.short_cycle_share or 0.0
     if share >= 0.30:
         severity = "problem"
         findings.append(
-            Finding("short_cycling", "problem", f"{share:.0%} of complete runs are short cycles.")
+            Finding(
+                "short_cycling",
+                "act" if days >= 3 else "check",
+                f"{share:.0%} of complete runs are short cycles.",
+                evidence,
+            )
         )
     elif share >= 0.10:
         severity = "attention"
         findings.append(
-            Finding("some_short_cycles", "attention", f"{share:.0%} of complete runs are short cycles.")
+            Finding("some_short_cycles", "check", f"{share:.0%} of complete runs are short cycles.", evidence)
         )
     if report.max_starts_in_one_hour > 3:
         severity = "problem" if severity == "problem" else "attention"
         findings.append(
             Finding(
                 "many_starts_per_hour",
-                "attention",
+                "check",
                 f"Up to {report.max_starts_in_one_hour} compressor starts within one hour.",
+                evidence,
             )
         )
     mild = [b for b in report.by_outdoor_temp if b["outdoor_temp_from"] >= 6]

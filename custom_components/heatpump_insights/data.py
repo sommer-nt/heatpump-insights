@@ -90,9 +90,12 @@ async def async_load_hourly_means(
 
 
 async def async_load_attribute_samples(
-    hass: HomeAssistant, entity_id: str, attribute: str, start: datetime, end: datetime
-) -> list[Sample]:
-    """A numeric attribute of every state change (e.g. a thermostat's current temperature)."""
+    hass: HomeAssistant, entity_id: str, attributes: tuple[str, ...], start: datetime, end: datetime
+) -> dict[str, list[Sample]]:
+    """Numeric attributes of every state update, from one recorder query.
+
+    E.g. a thermostat's ``current_temperature`` and ``temperature`` (setpoint).
+    """
     # state_changes_during_period skips attribute-only updates, which is exactly how
     # thermostats report a new room temperature; this query returns every update.
     states = await get_instance(hass).async_add_executor_job(
@@ -109,14 +112,15 @@ async def async_load_attribute_samples(
     )
     unit = hass.config.units.temperature_unit
     scale, offset = (5 / 9, -32 * 5 / 9) if unit == "°F" else (1.0, 0.0)
-    samples = []
+    result: dict[str, list[Sample]] = {attribute: [] for attribute in attributes}
     for state in states.get(entity_id.lower(), []):
-        value = state.attributes.get(attribute)
-        try:
-            number = float(value) * scale + offset if value is not None else None
-        except (TypeError, ValueError):
-            number = None
-        if state.state in (STATE_UNKNOWN, STATE_UNAVAILABLE):
-            number = None
-        samples.append(Sample(state.last_updated.timestamp(), number))
-    return samples
+        ts = state.last_updated.timestamp()
+        unavailable = state.state in (STATE_UNKNOWN, STATE_UNAVAILABLE)
+        for attribute in attributes:
+            value = state.attributes.get(attribute)
+            try:
+                number = float(value) * scale + offset if value is not None and not unavailable else None
+            except (TypeError, ValueError):
+                number = None
+            result[attribute].append(Sample(ts, number))
+    return result
