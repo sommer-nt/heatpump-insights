@@ -8,7 +8,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import llm
 from homeassistant.helpers.typing import ConfigType
 
@@ -42,13 +41,6 @@ async def _async_register_strategy(hass: HomeAssistant) -> None:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    # v0.3.0 attached valve sensors to devices it created with Homematic IP identifiers.
-    # Detach this entry from any device that is not its own.
-    registry = dr.async_get(hass)
-    for device in dr.async_entries_for_config_entry(registry, entry.entry_id):
-        if not any(domain == DOMAIN for domain, _ in device.identifiers):
-            registry.async_update_device(device.id, remove_config_entry_id=entry.entry_id)
-
     # Valve bridge sensors first: the first analysis pairs valves with rooms through them.
     await hass.config_entries.async_forward_entry_setups(entry, [Platform.BINARY_SENSOR])
     coordinator = InsightsCoordinator(hass, entry)

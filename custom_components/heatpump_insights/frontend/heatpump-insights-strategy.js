@@ -196,4 +196,6 @@ class HeatPumpInsightsStrategy extends HTMLElement {
   }
 }
 
-customElements.define("ll-strategy-dashboard-heatpump-insights", HeatPumpInsightsStrategy);
+if (!customElements.get("ll-strategy-dashboard-heatpump-insights")) {
+  customElements.define("ll-strategy-dashboard-heatpump-insights", HeatPumpInsightsStrategy);
+}
