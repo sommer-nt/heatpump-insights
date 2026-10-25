@@ -14,7 +14,8 @@
           "circuit_flow_temp_entity": "Vorlauf Heizkreis",
           "circuit_flow_target_entity": "Soll-Vorlauf (Regler)",
           "curve_slope_entity": "Heizkurven-Steilheit",
-          "room_entities": "Raumthermostate"
+          "room_entities": "Raumthermostate",
+          "valve_entities": "Ventile je Heizkreis"
         },
         "data_description": {
           "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
@@ -25,7 +26,8 @@
           "circuit_flow_temp_entity": "Vorlauftemperatur des Heizkreises, also das, was die Heizkurve regelt (nach Puffer oder Mischer). Schaltet die Heizkurven-Analyse frei.",
           "circuit_flow_target_entity": "Die Vorlauftemperatur, die der Regler aus seiner Heizkurve berechnet. Ergibt die sauberste Kurve und zeigt, ob sie erreicht wird.",
           "curve_slope_entity": "Die Steilheit-Einstellung deines Reglers, zur Einordnung.",
-          "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt."
+          "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt.",
+          "valve_entities": "Entitäten, die zeigen, ob Ventil bzw. Stellantrieb eines Kreises offen ist: Schalter, Binärsensor oder Leistung des Stellantriebs. Wird automatisch den Räumen zugeordnet."
         }
       }
     },
@@ -48,7 +50,9 @@
           "circuit_flow_temp_entity": "Vorlauf Heizkreis",
           "circuit_flow_target_entity": "Soll-Vorlauf (Regler)",
           "curve_slope_entity": "Heizkurven-Steilheit",
-          "room_entities": "Raumthermostate"
+          "room_entities": "Raumthermostate",
+          "valve_entities": "Ventile je Heizkreis",
+          "hmip_valve_sensors": "Homematic-IP-Ventilsensoren anlegen"
         },
         "data_description": {
           "power_entity": "Aufgenommene Leistung der Wärmepumpe (Zwischenzähler oder Herstellersensor). Daraus werden Verdichterläufe erkannt.",
@@ -61,8 +65,17 @@
           "circuit_flow_temp_entity": "Vorlauftemperatur des Heizkreises, also das, was die Heizkurve regelt (nach Puffer oder Mischer). Schaltet die Heizkurven-Analyse frei.",
           "circuit_flow_target_entity": "Die Vorlauftemperatur, die der Regler aus seiner Heizkurve berechnet. Ergibt die sauberste Kurve und zeigt, ob sie erreicht wird.",
           "curve_slope_entity": "Die Steilheit-Einstellung deines Reglers, zur Einordnung.",
-          "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt."
+          "room_entities": "Climate-Entitäten der Räume (jede Marke). Schaltet die Raum-Analyse frei: überwärmte Räume und der Raum, der die Kurve begrenzt.",
+          "valve_entities": "Entitäten, die zeigen, ob Ventil bzw. Stellantrieb eines Kreises offen ist: Schalter, Binärsensor oder Leistung des Stellantriebs. Wird automatisch den Räumen zugeordnet.",
+          "hmip_valve_sensors": "Legt für Wandthermostate mit Relais (z. B. HmIP-BWTH) und Schaltaktoren in Homematic-IP-Heizgruppen einen Sensor „offen/geschlossen“ an, damit der Verlauf aufgezeichnet wird. Übergangslösung, bis Home Assistant den Wert selbst bereitstellt."
         }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "valve": {
+        "name": "Ventil"
       }
     }
   }

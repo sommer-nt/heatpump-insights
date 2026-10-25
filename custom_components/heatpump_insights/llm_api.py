@@ -13,10 +13,13 @@ import probatio
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import llm
 from homeassistant.util import dt as dt_util
 
 from .analysis import CycleConfig, analyze_cycles, analyze_heating_curve, analyze_rooms
+from .analysis.rooms import match_valves
 from .const import (
     CONF_CIRCUIT_FLOW,
     CONF_CIRCUIT_TARGET,
@@ -27,6 +30,7 @@ from .const import (
     CONF_POWER,
     CONF_ROOMS,
     CONF_SHORT_CYCLE_MIN,
+    CONF_VALVES,
     DEFAULT_SHORT_CYCLE_MIN,
     DOMAIN,
     LLM_API_ID,
@@ -84,6 +88,19 @@ def _pick(hass: HomeAssistant, name: str | None) -> ConfigEntry:
 def _room_name(hass: HomeAssistant, entity_id: str) -> str:
     state = hass.states.get(entity_id)
     return state.name if state else entity_id
+
+
+def _place(hass: HomeAssistant, entity_id: str) -> tuple[str, str | None, str | None]:
+    """(name, area, device name or heating group) used to pair valves with rooms."""
+    name = _room_name(hass, entity_id)
+    entry = er.async_get(hass).async_get(entity_id)
+    device = dr.async_get(hass).async_get(entry.device_id) if entry and entry.device_id else None
+    area = (entry.area_id if entry else None) or (device.area_id if device else None)
+    state = hass.states.get(entity_id)
+    group = state.attributes.get("heating_group") if state else None
+    if group is None and device is not None:
+        group = device.name_by_user or device.name
+    return name, area, group
 
 
 def _days(maximum: int, default: int) -> dict:
@@ -277,7 +294,8 @@ class RoomsTool(llm.Tool):
     ) -> llm.ToolResult:
         args = self.parameters(tool_input.tool_args)
         entry = _pick(hass, args.get("heat_pump"))
-        room_ids = _settings(entry).get(CONF_ROOMS) or []
+        settings = _settings(entry)
+        room_ids = settings.get(CONF_ROOMS) or []
         if not room_ids:
             raise HomeAssistantError(
                 "No room thermostats are assigned. Add climate entities in the integration options."
@@ -289,12 +307,28 @@ class RoomsTool(llm.Tool):
             actual = await async_load_attribute_samples(hass, entity_id, "current_temperature", start, end)
             setpoint = await async_load_attribute_samples(hass, entity_id, "temperature", start, end)
             rooms[_room_name(hass, entity_id)] = (actual, setpoint)
+
+        valve_ids = settings.get(CONF_VALVES) or []
+        matched, unmatched = match_valves(
+            {e: _place(hass, e) for e in room_ids}, {v: _place(hass, v) for v in valve_ids}
+        )
+        valves = {}
+        for valve_id, room_id in matched.items():
+            room = _room_name(hass, room_id)
+            if room not in valves:  # one valve per room is enough for the open share
+                valves[room] = await async_load_samples(hass, valve_id, start, end)
         report = await hass.async_add_executor_job(
             lambda: analyze_rooms(
-                rooms, start.timestamp(), end.timestamp(), tz=dt_util.get_default_time_zone()
+                rooms,
+                start.timestamp(),
+                end.timestamp(),
+                valves=valves or None,
+                tz=dt_util.get_default_time_zone(),
             )
         )
         data = report.as_dict()
+        if unmatched:
+            data["unmatched_valves"] = [_room_name(hass, v) for v in unmatched]
         data["heat_pump"] = entry.title
         data["knowledge"] = f"{KNOWLEDGE_URL}/rooms.md"
         return llm.ToolResult(data=data)

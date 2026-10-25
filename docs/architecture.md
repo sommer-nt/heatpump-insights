@@ -71,9 +71,10 @@ only **roles**:
 | `circuit_flow_target` | controller's calculated target flow | heating curve (controller curve, delivery check) |
 | `curve_slope` | controller's slope setting (number entity) | reported for reference |
 | `rooms` | any `climate` entities | room comfort, limiting room |
+| `valves` | switch / binary sensor / actuator power per circuit | undersupplied rooms, open circuits |
 | `return_temp` | vendor sensor, DS18B20 | spread |
 | `heat_energy` | heat meter (M-Bus, MQTT), vendor heat counter | real COP / SPF |
-| *planned:* `operating_mode`, `compressor_state`, `dhw_temp`, `curve_shift`, `electric_energy`, `backup_heater`, `valve_state[]` | | mode split, change detection, throttled rooms |
+| *planned:* `operating_mode`, `compressor_state`, `dhw_temp`, `curve_shift`, `electric_energy`, `backup_heater` | | mode split, change detection, throttled rooms |
 
 Today the user picks entities in the config flow. **Device profiles** (see
 [profiles/](../profiles/README.md)) will pre-fill the mapping for known integrations.

@@ -16,12 +16,14 @@ from .const import (
     CONF_CURVE_SLOPE,
     CONF_FLOW_TEMP,
     CONF_HEAT_ENERGY,
+    CONF_HMIP_VALVES,
     CONF_ON_THRESHOLD_W,
     CONF_OUTDOOR_TEMP,
     CONF_POWER,
     CONF_RETURN_TEMP,
     CONF_ROOMS,
     CONF_SHORT_CYCLE_MIN,
+    CONF_VALVES,
     DEFAULT_SHORT_CYCLE_MIN,
     DOMAIN,
 )
@@ -51,6 +53,9 @@ def _roles_schema(values: dict[str, Any]) -> dict:
         opt(CONF_ROOMS): selector.EntitySelector(
             selector.EntitySelectorConfig(domain="climate", multiple=True)
         ),
+        opt(CONF_VALVES): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=["binary_sensor", "switch", "sensor"], multiple=True)
+        ),
     }
 
 
@@ -61,6 +66,9 @@ def _tuning_schema(values: dict[str, Any]) -> dict:
         ): selector.NumberSelector(
             selector.NumberSelectorConfig(min=1, max=5000, step=1, unit_of_measurement="W")
         ),
+        probatio.Optional(
+            CONF_HMIP_VALVES, default=values.get(CONF_HMIP_VALVES, False)
+        ): selector.BooleanSelector(),
         probatio.Optional(
             CONF_SHORT_CYCLE_MIN,
             default=values.get(CONF_SHORT_CYCLE_MIN, DEFAULT_SHORT_CYCLE_MIN),

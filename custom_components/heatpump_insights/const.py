@@ -14,6 +14,8 @@ CONF_CIRCUIT_FLOW = "circuit_flow_temp_entity"
 CONF_CIRCUIT_TARGET = "circuit_flow_target_entity"
 CONF_CURVE_SLOPE = "curve_slope_entity"
 CONF_ROOMS = "room_entities"
+CONF_VALVES = "valve_entities"
+CONF_HMIP_VALVES = "hmip_valve_sensors"
 
 ROLES = {
     CONF_POWER: "Electrical power of the heat pump (required)",
@@ -25,6 +27,7 @@ ROLES = {
     CONF_CIRCUIT_TARGET: "Target flow temperature calculated by the controller",
     CONF_CURVE_SLOPE: "Heating curve slope setting",
     CONF_ROOMS: "Room thermostats (climate entities)",
+    CONF_VALVES: "Valve or actuator state per heating circuit (on = open)",
 }
 
 # Which analysis each optional role unlocks, so the assistant can tell the user
@@ -37,6 +40,7 @@ ROLE_UNLOCKS = {
     CONF_CIRCUIT_FLOW: "heating curve analysis (actual curve)",
     CONF_CIRCUIT_TARGET: "heating curve analysis (controller curve, delivery check)",
     CONF_ROOMS: "room comfort: overheated rooms, the room that limits the curve",
+    CONF_VALVES: "undersupplied rooms (valve open but cold), number of open circuits",
 }
 
 CONF_ON_THRESHOLD_W = "on_threshold_w"

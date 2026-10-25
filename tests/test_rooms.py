@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 import pytest
 
 from analysis import Sample, analyze_rooms
+from analysis.rooms import match_valves
 
 T0 = datetime(2026, 1, 12, tzinfo=UTC).timestamp()
 DAY = 86400.0
@@ -55,3 +56,47 @@ def test_rooms_with_little_data_are_not_rated():
 def test_all_comfortable():
     r = analyze_rooms({"A": (flat(21.2), flat(21.0)), "B": (flat(20.8), flat(21.0))}, T0, T0 + DAY)
     assert r.findings == []
+
+
+def test_valve_open_but_cold_is_undersupplied():
+    rooms = {"Bath": (flat(21.0), flat(23.0)), "Living": (flat(21.0), flat(21.0))}
+    valves = {
+        "Bath": [Sample(T0, 1.0)],
+        "Living": [Sample(T0, 1.0), Sample(T0 + DAY / 4, 0.0)],
+    }
+    r = analyze_rooms(rooms, T0, T0 + DAY, valves=valves)
+    by_room = {x["room"]: x for x in r.rooms}
+    assert by_room["Bath"]["valve_open_share"] == pytest.approx(1.0)
+    assert by_room["Living"]["valve_open_share"] == pytest.approx(0.25)
+    assert "undersupplied_room" in {f.code for f in r.findings}
+    assert r.valves["mean_open"] == pytest.approx(1.25)
+
+
+def test_power_readings_count_as_open_and_few_open_circuits():
+    names = ["A", "B", "C", "D"]
+    rooms = {n: (flat(21.0), flat(21.0)) for n in names}
+    valves = {n: [Sample(T0, 0.0)] for n in names}
+    valves["A"] = [Sample(T0, 1.8)]  # actuator draws 1.8 W = open
+    r = analyze_rooms(rooms, T0, T0 + DAY, valves=valves)
+    assert r.valves == {"circuits": 4, "mean_open": 1.0, "at_most_one_open_share": 1.0}
+    assert "few_open_circuits" in {f.code for f in r.findings}
+
+
+def test_match_valves_by_group_area_and_name():
+    rooms = {
+        "climate.wohnzimmer": ("Wandthermostat Wohnzimmer", "wohnzimmer", "Wohnzimmer"),
+        "climate.kuche": ("Wandthermostat Küche", "kuche", "Küchenstudio"),
+        "climate.flur": ("Wandthermostat Flur", "flur", "Flur"),
+        "climate.flur_dg": ("Flur Dachgeschoss", "flur_dg", "Flur Dachgeschoss"),
+    }
+    valves = {
+        "binary_sensor.wth_wohnen_valve": ("Wandthermostat Wohnen Ventil", None, "Wohnzimmer"),
+        "switch.fsm_kuche": ("Schaltaktor Stellregler FBH Küche", None, None),
+        "switch.in_area": ("Aktor 7", "flur", None),
+        "switch.fsm_flur_dg": ("Schaltaktor FBH Flur DG", None, None),
+    }
+    matched, unmatched = match_valves(rooms, valves)
+    assert matched["binary_sensor.wth_wohnen_valve"] == "climate.wohnzimmer"
+    assert matched["switch.fsm_kuche"] == "climate.kuche"
+    assert matched["switch.in_area"] == "climate.flur"
+    assert unmatched == ["switch.fsm_flur_dg"]  # "Flur" fits two rooms: left to the user

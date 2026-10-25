@@ -12,6 +12,7 @@ from .analysis import Sample
 from .analysis.timeseries import segments, time_weighted_mean
 
 _TO_WATT = {"W": 1.0, "kW": 1000.0, "MW": 1e6}
+_ON_OFF = {"on": 1.0, "off": 0.0, "open": 1.0, "closed": 0.0}
 
 
 def _factor(hass: HomeAssistant, entity_id: str) -> tuple[float, float]:
@@ -29,6 +30,8 @@ def _to_sample(state: State, scale: float, offset: float) -> Sample:
     ts = state.last_changed.timestamp()
     if state.state in (STATE_UNKNOWN, STATE_UNAVAILABLE, ""):
         return Sample(ts, None)
+    if state.state in _ON_OFF:
+        return Sample(ts, _ON_OFF[state.state])
     try:
         return Sample(ts, float(state.state) * scale + offset)
     except ValueError:

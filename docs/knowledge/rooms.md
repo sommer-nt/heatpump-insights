@@ -34,10 +34,33 @@ Findings *(heuristics, to be validated)*:
 | Many rooms cold | `poor_tracking` | Heat source does not deliver the target – check source and flow |
 | Rooms fine, setpoints high (≥ 23 °C) | any | Setpoint is a comfort choice; each kelvin of room temperature costs roughly 6 % heating energy *(commonly quoted rule of thumb)* |
 
+## Valves: is the room throttled or starved?
+
+With a valve state per circuit (role *valves*: a switch, binary sensor or the actuator's power),
+the analysis also reports how much of the time each circuit is open and how many circuits are
+open at once. Valves are matched to rooms automatically (same heating group, then same area,
+then a shared name word); ambiguous ones are listed as `unmatched_valves`.
+
+| Valve | Room | Meaning |
+|---|---|---|
+| open almost always (≥ 80 %) | too cold | `undersupplied_room`: the circuit cannot deliver – flow through the circuit, balancing, emitter size, or the curve is too low for this room |
+| rarely open | too warm | heat arrives anyway (neighbouring rooms, sun, thermal mass); the curve can likely go down |
+| mostly ≤ 1 of ≥ 4 circuits open | – | `few_open_circuits`: little circulating water; can shorten compressor runs (less relevant with a buffer tank) |
+
+### Homematic IP: valve sensors bridge
+
+Wall thermostats with a built-in relay (HmIP-BWTH) switch underfloor actuators directly; switch
+actuators (HmIP-FSM) do the same for other thermostats. The Homematic IP cloud reports the relay
+state (`valvePosition` of the internal switch channel), but Home Assistant's Homematic IP
+integration does not create an entity for it. With the option **Create Homematic IP valve
+sensors**, Heat Pump Insights adds one binary sensor per thermostat relay and per switch actuator
+in a heating group, attached to the existing device. History starts when the option is enabled.
+This is a bridge until Home Assistant exposes the value itself.
+
 ## Limitations
 
-- **Valve and actuator positions** (e.g. underfloor actuators) are rarely exposed as entities in
-  Home Assistant. Without them we cannot see whether rooms are throttled by their valves – which
-  would hide overheating and can cause compressor cycling. A future optional role.
+- Without valve states, a throttled room (valve mostly closed) and a starved room look alike
+  from the temperature alone.
+- Thermal (wax) actuators need a few minutes to open; short relay pulses are not full openings.
 - Thermostats measure at one spot; sun, cooking or open windows show up as deviations.
 - Rooms whose thermostat is in "off" or frost-protection mode should be left out.

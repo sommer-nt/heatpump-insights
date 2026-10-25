@@ -18,6 +18,9 @@ Milestones are gated by the [validation plan](validation.md), not by dates.
 ## v0.2+ – Heating curve and rooms ✅
 - [x] `heatpump_heating_curve` on long-term statistics (controller target + actual flow, robust fit)
 - [x] `heating_rooms`: room comfort from any climate entity, overheated and limiting rooms
+- [x] Valve role per circuit; Homematic IP valve sensors bridge (BWTH relay, FSM in heating groups)
+- [ ] Upstream: expose the HmIP-BWTH relay state in Home Assistant's Homematic IP integration
+- [ ] Correlate closing circuits with compressor starts
 
 ## v0.3 – Energy signature
 - [ ] `heatpump_energy_signature`: before/after, similar days, degree days

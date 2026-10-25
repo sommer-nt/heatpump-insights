@@ -1,6 +1,6 @@
 [project]
 name = "heatpump-insights"
-version = "0.2.0"
+version = "0.3.0"
 description = "Vendor-independent heat pump analysis for Home Assistant"
 requires-python = ">=3.12"
 license = "Apache-2.0"

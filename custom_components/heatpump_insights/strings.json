@@ -14,7 +14,8 @@
           "circuit_flow_temp_entity": "Heating circuit flow temperature",
           "circuit_flow_target_entity": "Target flow temperature (controller)",
           "curve_slope_entity": "Heating curve slope",
-          "room_entities": "Room thermostats"
+          "room_entities": "Room thermostats",
+          "valve_entities": "Valves per heating circuit"
         },
         "data_description": {
           "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
@@ -25,7 +26,8 @@
           "circuit_flow_temp_entity": "Flow temperature of the heating circuit, i.e. what the heating curve controls (after a buffer or mixer). Unlocks the heating curve analysis.",
           "circuit_flow_target_entity": "The flow temperature the controller calculates from its heating curve. Gives the cleanest curve and shows whether it is delivered.",
           "curve_slope_entity": "The slope setting of your controller, reported for reference.",
-          "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve."
+          "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve.",
+          "valve_entities": "Entities showing whether a circuit's valve or actuator is open: switch, binary sensor or actuator power. Matched to rooms automatically."
         }
       }
     },
@@ -48,7 +50,9 @@
           "circuit_flow_temp_entity": "Heating circuit flow temperature",
           "circuit_flow_target_entity": "Target flow temperature (controller)",
           "curve_slope_entity": "Heating curve slope",
-          "room_entities": "Room thermostats"
+          "room_entities": "Room thermostats",
+          "valve_entities": "Valves per heating circuit",
+          "hmip_valve_sensors": "Create Homematic IP valve sensors"
         },
         "data_description": {
           "power_entity": "Power drawn by the heat pump (sub-meter or vendor sensor). Used to detect compressor runs.",
@@ -61,8 +65,17 @@
           "circuit_flow_temp_entity": "Flow temperature of the heating circuit, i.e. what the heating curve controls (after a buffer or mixer). Unlocks the heating curve analysis.",
           "circuit_flow_target_entity": "The flow temperature the controller calculates from its heating curve. Gives the cleanest curve and shows whether it is delivered.",
           "curve_slope_entity": "The slope setting of your controller, reported for reference.",
-          "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve."
+          "room_entities": "Climate entities of the rooms (any brand). Unlocks room comfort: overheated rooms and the room that limits the curve.",
+          "valve_entities": "Entities showing whether a circuit's valve or actuator is open: switch, binary sensor or actuator power. Matched to rooms automatically.",
+          "hmip_valve_sensors": "Adds an 'open/closed' sensor for wall thermostats with built-in relay (e.g. HmIP-BWTH) and switch actuators in Homematic IP heating groups, so their history is recorded. Bridge until Home Assistant exposes the value itself."
         }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "valve": {
+        "name": "Valve"
       }
     }
   }
