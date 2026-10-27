@@ -92,6 +92,37 @@ display-only.
 Home Assistant history export (*History → ⋮ → Download data*) and see the cycle analysis with
 interactive charts – for heat pumps and burners (gas, oil, pellets) alike.
 
+## Requirements
+
+**Must have**
+
+- Home Assistant **2026.10** or newer, with the recorder enabled (it is by default).
+- HACS (or copy `custom_components/heatpump_insights` by hand).
+- An **electrical power sensor for the heat pump alone** (W or kW) – a meter or smart plug on its
+  circuit, or the power your heat pump integration reports. It should update about once a minute:
+  values polled from a vendor cloud every 5–15 minutes miss short runs.
+
+**Optional – each sensor unlocks more**
+
+| Sensor | Unlocks |
+|---|---|
+| Outdoor temperature | Cycling by weather |
+| + heating circuit flow or the controller's target flow (with long-term statistics) | Heating curve |
+| Room thermostats (`climate` entities) | Overheated rooms, the room that limits the curve |
+| Valve state per heating circuit | Valve open share, undersupplied rooms |
+| Refrigerant high pressure, hot gas temperature | Compressor view on the dashboard |
+
+**Data takes time.** The cycling rating appears once at least 80 % of the last 7 days are recorded;
+valve statements need 3 days of valve history; the heating curve becomes meaningful with cold days.
+
+**AI assistant (optional).** Sensors and dashboard work without any AI. For the assistant you need
+Home Assistant's *Model Context Protocol Server* integration and an MCP client (cloud clients need
+remote access to Home Assistant), or an Assist conversation agent with the **Heat Pump Insights**
+LLM API enabled.
+
+**Not (yet) a fit:** systems without their own power measurement, values only from a slow cloud,
+and burners without a power or burner-on signal.
+
 ## Installation (preview)
 
 Requires Home Assistant **2026.10** or newer.
